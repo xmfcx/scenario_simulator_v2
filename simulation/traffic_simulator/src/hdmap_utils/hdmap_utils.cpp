@@ -1196,6 +1196,9 @@ boost::optional<double> HdMapUtils::getLongitudinalDistance(
 {
   RCLCPP_ERROR_STREAM(
     rclcpp::get_logger("HdMapUtils::getLongitudinalDistance"), __FILE__ << "," << __LINE__);
+  RCLCPP_ERROR_STREAM(
+    rclcpp::get_logger("from"), static_cast<int>(from_lanelet_id) << "," << from_s);
+  RCLCPP_ERROR_STREAM(rclcpp::get_logger("to"), static_cast<int>(to_lanelet_id) << "," << to_s);
   if (from_lanelet_id == to_lanelet_id) {
     if (from_s > to_s) {
       return boost::none;
