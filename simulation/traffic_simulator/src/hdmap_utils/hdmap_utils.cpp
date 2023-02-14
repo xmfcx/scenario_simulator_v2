@@ -1201,15 +1201,14 @@ boost::optional<double> HdMapUtils::getLongitudinalDistance(
   RCLCPP_ERROR_STREAM(rclcpp::get_logger("to"), static_cast<int>(to_lanelet_id) << "," << to_s);
   if (from_lanelet_id == to_lanelet_id) {
     if (from_s > to_s) {
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger("none"), __FILE__ << "," << __LINE__);
       return boost::none;
     } else {
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger("longitudinal"), __FILE__ << "," << __LINE__);
       return to_s - from_s;
     }
   }
   const auto route = getRoute(from_lanelet_id, to_lanelet_id);
   if (route.empty()) {
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger("no route"), __FILE__ << "," << __LINE__);
     return boost::none;
   }
   double distance = 0;
