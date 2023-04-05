@@ -19,10 +19,13 @@
 #include <deque>
 #include <memory>
 #include <openscenario_interpreter/syntax/open_scenario.hpp>
-#include <openscenario_preprocessor_msgs/srv/check_derivative_remained.hpp>
-#include <openscenario_preprocessor_msgs/srv/derive.hpp>
-#include <openscenario_preprocessor_msgs/srv/load.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <xercesc/framework/LocalFileInputSource.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/sax/ErrorHandler.hpp>
+#include <xercesc/sax/HandlerBase.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/validators/common/Grammar.hpp>
 
 namespace openscenario_preprocessor
 {
@@ -53,27 +56,74 @@ struct ScenarioSet
   float frame_rate;
 };
 
-class Preprocessor : public rclcpp::Node
+class XMLValidator
 {
 public:
-  explicit Preprocessor(const rclcpp::NodeOptions &);
+  XMLValidator(boost::filesystem::path xsd_file) : xsd_file(xsd_file)
+  {
+    // Initialize Xerces library
+    xercesc::XMLPlatformUtils::Initialize();
+  }
+  ~XMLValidator()
+  {
+    // Terminate Xerces library
+    xercesc::XMLPlatformUtils::Terminate();
+  }
+  bool validate(const boost::filesystem::path & xml_file) noexcept
+  {
+    try {
+      // Create a DOM parser
+      xercesc::XercesDOMParser parser;
 
-private:
+      // Load the XSD file
+      parser.loadGrammar(xsd_file.string().c_str(), xercesc::Grammar::SchemaGrammarType, true);
+
+      // Set the validation scheme
+      xercesc::ErrorHandler * error_handler = new xercesc::HandlerBase();
+      parser.setErrorHandler(error_handler);
+      parser.setValidationScheme(xercesc::XercesDOMParser::Val_Always);
+      parser.setDoNamespaces(true);
+      parser.setDoSchema(true);
+      parser.setValidationConstraintFatal(true);
+
+      // Parse the XML file
+      parser.parse(xml_file.string().c_str());
+
+      int error_count = parser.getErrorCount();
+      delete error_handler;
+      return error_count == 0;
+
+    } catch (const xercesc::XMLException & ex) {
+      std::cerr << "Error: " << ex.getMessage() << std::endl;
+      return false;
+    } catch (...) {
+      std::cerr << "Error: Unknown exception" << std::endl;
+      return false;
+    }
+  }
+
+  const boost::filesystem::path xsd_file;
+};
+
+class Preprocessor
+{
+public:
+  Preprocessor() = default;
+
+protected:
   void preprocessScenario(ScenarioSet &);
 
-  [[nodiscard]] bool validateXOSC(const boost::filesystem::path &, bool);
-
-  rclcpp::Service<openscenario_preprocessor_msgs::srv::Load>::SharedPtr load_server;
-
-  rclcpp::Service<openscenario_preprocessor_msgs::srv::Derive>::SharedPtr derive_server;
-
-  rclcpp::Service<openscenario_preprocessor_msgs::srv::CheckDerivativeRemained>::SharedPtr
-    check_server;
+  [[nodiscard]] bool validateXOSC(
+    const boost::filesystem::path & target_file, const boost::filesystem::path & xsd_file,
+    bool verbose = false);
 
   std::deque<ScenarioSet> preprocessed_scenarios;
 
   std::mutex preprocessed_scenarios_mutex;
+
+  XMLValidator xml_validator;
 };
+
 }  // namespace openscenario_preprocessor
 
 #endif  // OPENSCENARIO_PREPROCESSOR__OPENSCENARIO_PREPROCESSOR_HPP_
