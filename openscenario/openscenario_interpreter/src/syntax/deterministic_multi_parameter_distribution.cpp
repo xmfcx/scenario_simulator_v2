@@ -24,5 +24,10 @@ DeterministicMultiParameterDistribution::DeterministicMultiParameterDistribution
 : DeterministicMultiParameterDistributionType(node, scope)
 {
 }
+
+ParameterDistribution DeterministicMultiParameterDistribution::derive()
+{
+  return DeterministicMultiParameterDistributionType::derive();
+}
 }  // namespace syntax
 }  // namespace openscenario_interpreter
