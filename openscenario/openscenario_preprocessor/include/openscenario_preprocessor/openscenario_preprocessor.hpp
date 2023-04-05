@@ -95,7 +95,7 @@ public:
 class Preprocessor
 {
 public:
-  Preprocessor() = default;
+  explicit Preprocessor() : xml_validator("") {}
 
 protected:
   void preprocessScenario(ScenarioSet &);
