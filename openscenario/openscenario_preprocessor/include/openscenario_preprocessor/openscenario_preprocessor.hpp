@@ -15,11 +15,9 @@
 #ifndef OPENSCENARIO_PREPROCESSOR__OPENSCENARIO_PREPROCESSOR_HPP_
 #define OPENSCENARIO_PREPROCESSOR__OPENSCENARIO_PREPROCESSOR_HPP_
 
-#include <concealer/execute.hpp>
 #include <deque>
 #include <memory>
 #include <openscenario_interpreter/syntax/open_scenario.hpp>
-#include <rclcpp/rclcpp.hpp>
 #include <xercesc/framework/LocalFileInputSource.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
@@ -33,20 +31,9 @@ struct ScenarioSet
 {
   ScenarioSet() = default;
 
-  explicit ScenarioSet(openscenario_preprocessor_msgs::srv::Load::Request & load_request)
+  explicit ScenarioSet(std::string path, int expect, float frame_rate)
+  : path(path), expect(expect), frame_rate(frame_rate)
   {
-    path = load_request.path;
-    expect = load_request.expect;
-    frame_rate = load_request.frame_rate;
-  }
-
-  auto getDeriveResponse() -> openscenario_preprocessor_msgs::srv::Derive::Response
-  {
-    openscenario_preprocessor_msgs::srv::Derive::Response response;
-    response.path = path;
-    response.expect = expect;
-    response.frame_rate = frame_rate;
-    return response;
   }
 
   std::string path;
