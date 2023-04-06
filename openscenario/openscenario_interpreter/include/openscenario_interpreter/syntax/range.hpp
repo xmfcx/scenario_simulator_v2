@@ -15,6 +15,7 @@
 #ifndef OPENSCENARIO_INTERPRETER__SYNTAX__RANGE_HPP_
 #define OPENSCENARIO_INTERPRETER__SYNTAX__RANGE_HPP_
 
+#include <algorithm>
 #include <openscenario_interpreter/scope.hpp>
 #include <openscenario_interpreter/syntax/double.hpp>
 #include <pugixml.hpp>

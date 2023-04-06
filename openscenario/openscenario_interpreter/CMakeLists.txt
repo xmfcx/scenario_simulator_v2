@@ -48,6 +48,9 @@ target_include_directories(${PROJECT_NAME}_without_ros PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_compile_options(${PROJECT_NAME}_without_ros PUBLIC -DWITHOUT_ROS)
+install(TARGETS ${PROJECT_NAME}_without_ros
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib)
 
 # workaround to allow deprecated header to build on both galactic and humble
 if(${tf2_geometry_msgs_VERSION} VERSION_LESS 0.18.0)
