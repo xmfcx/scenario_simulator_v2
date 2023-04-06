@@ -87,6 +87,7 @@ struct RelativeDistanceCondition : private Scope, private SimulatorCore::Conditi
 
   auto description() const -> String;
 
+#ifndef WITHOUT_ROS
   template <CoordinateSystem::value_type, RelativeDistanceType::value_type, Boolean::value_type>
   auto distance(const EntityRef &) -> double
   {
@@ -96,11 +97,13 @@ struct RelativeDistanceCondition : private Scope, private SimulatorCore::Conditi
   auto distance(const EntityRef &) -> double;
 
   auto evaluate() -> Object;
+#endif
 };
 
 // NOTE: Ignore spell miss due to OpenSCENARIO standard.
 // cspell: ignore euclidian
 
+#ifndef WITHOUT_ROS
 // clang-format off
 template <> auto RelativeDistanceCondition::distance<CoordinateSystem::entity, RelativeDistanceType::euclidianDistance, false>(const EntityRef &) -> double;
 template <> auto RelativeDistanceCondition::distance<CoordinateSystem::entity, RelativeDistanceType::euclidianDistance, true >(const EntityRef &) -> double;
@@ -109,6 +112,7 @@ template <> auto RelativeDistanceCondition::distance<CoordinateSystem::entity, R
 template <> auto RelativeDistanceCondition::distance<CoordinateSystem::lane,   RelativeDistanceType::lateral,           false>(const EntityRef &) -> double;
 template <> auto RelativeDistanceCondition::distance<CoordinateSystem::lane,   RelativeDistanceType::longitudinal,      false>(const EntityRef &) -> double;
 // clang-format on
+#endif
 }  // namespace syntax
 }  // namespace openscenario_interpreter
 

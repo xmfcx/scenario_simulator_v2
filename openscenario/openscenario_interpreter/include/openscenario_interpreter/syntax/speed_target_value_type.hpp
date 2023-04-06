@@ -16,7 +16,11 @@
 #define OPENSCENARIO_INTERPRETER__SYNTAX__SPEED_TARGET_VALUE_TYPE_HPP_
 
 #include <iostream>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator/data_type/speed_change.hpp>
+#endif
+
 #include <type_traits>
 
 namespace openscenario_interpreter
@@ -62,6 +66,7 @@ struct SpeedTargetValueType
 
   constexpr operator value_type() const noexcept { return value; }
 
+#ifndef WITHOUT_ROS
   explicit constexpr operator traffic_simulator::speed_change::RelativeTargetSpeed::Type() const
   {
     switch (value) {
@@ -73,6 +78,7 @@ struct SpeedTargetValueType
         return traffic_simulator::speed_change::RelativeTargetSpeed::Type();
     }
   }
+#endif
 };
 
 auto operator>>(std::istream &, SpeedTargetValueType &) -> std::istream &;

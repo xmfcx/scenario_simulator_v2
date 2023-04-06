@@ -23,7 +23,10 @@
 #include <openscenario_interpreter/syntax/properties.hpp>
 #include <openscenario_interpreter/syntax/vehicle_category.hpp>
 #include <pugixml.hpp>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator_msgs/msg/vehicle_parameters.hpp>
+#endif
 
 namespace openscenario_interpreter
 {
@@ -60,7 +63,9 @@ struct Vehicle : public Scope  // for ParameterDeclarations
 
   explicit Vehicle(const pugi::xml_node &, Scope &);
 
+#ifndef WITHOUT_ROS
   explicit operator traffic_simulator_msgs::msg::VehicleParameters() const;
+#endif
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter

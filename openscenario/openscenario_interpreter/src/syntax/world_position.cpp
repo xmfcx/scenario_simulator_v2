@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef WITHOUT_ROS
 #include <quaternion_operation/quaternion_operation.h>
+#endif
 
 #include <openscenario_interpreter/reader/attribute.hpp>
 #include <openscenario_interpreter/simulator_core.hpp>
@@ -32,11 +34,13 @@ WorldPosition::WorldPosition(const pugi::xml_node & node, Scope & scope)
 {
 }
 
+#ifndef WITHOUT_ROS
 WorldPosition::operator NativeLanePosition() const
 {
   return convert<NativeLanePosition>(static_cast<NativeWorldPosition>(*this));
 }
 
 WorldPosition::operator NativeWorldPosition() const { return makeNativeWorldPosition(*this); }
+#endif
 }  // namespace syntax
 }  // namespace openscenario_interpreter

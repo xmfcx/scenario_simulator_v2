@@ -36,7 +36,9 @@ auto TrafficSignalControllerAction::run() noexcept -> void {}
 
 auto TrafficSignalControllerAction::start() -> void
 {
+#ifndef WITHOUT_ROS
   local().ref<TrafficSignalController>(traffic_signal_controller_ref).changePhaseTo(phase);
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

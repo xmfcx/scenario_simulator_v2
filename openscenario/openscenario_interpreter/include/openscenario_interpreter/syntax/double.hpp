@@ -15,7 +15,7 @@
 #ifndef OPENSCENARIO_INTERPRETER__SYNTAX__DOUBLE_HPP_
 #define OPENSCENARIO_INTERPRETER__SYNTAX__DOUBLE_HPP_
 
-#include <std_msgs/msg/float64.hpp>
+#include <openscenario_interpreter/dependency_control/float64.hpp>
 #include <string>
 
 namespace openscenario_interpreter

@@ -36,6 +36,7 @@ Position::Position(const pugi::xml_node & node, Scope & scope)
 {
 }
 
+#ifndef WITHOUT_ROS
 Position::operator geometry_msgs::msg::Pose() const
 {
   return apply<geometry_msgs::msg::Pose>(
@@ -48,5 +49,6 @@ Position::operator geometry_msgs::msg::Pose() const
       ),
     *this);
 }
+#endif  // WITHOUT_ROS
 }  // namespace syntax
 }  // namespace openscenario_interpreter

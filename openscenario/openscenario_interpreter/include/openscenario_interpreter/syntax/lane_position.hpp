@@ -14,8 +14,9 @@
 
 #ifndef OPENSCENARIO_INTERPRETER__SYNTAX__LANE_POSITION_HPP_
 #define OPENSCENARIO_INTERPRETER__SYNTAX__LANE_POSITION_HPP_
-
+#ifndef WITHOUT_ROS
 #include <geometry_msgs/msg/pose.hpp>
+#endif
 #include <openscenario_interpreter/scope.hpp>
 #include <openscenario_interpreter/simulator_core.hpp>
 #include <openscenario_interpreter/syntax/double.hpp>
@@ -53,9 +54,11 @@ struct LanePosition : private SimulatorCore::CoordinateSystemConversion
   explicit LanePosition(
     const String &, const String &, const Double &, const Double &, const Orientation & = {});
 
+#ifndef WITHOUT_ROS
   explicit operator NativeLanePosition() const;
 
   explicit operator NativeWorldPosition() const;
+#endif
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter

@@ -35,15 +35,18 @@ TrafficSignals::TrafficSignals(const pugi::xml_node & node, Scope & scope)
 
 auto TrafficSignals::evaluate() -> Object
 {
+#ifndef WITHOUT_ROS
   for (auto && controller : traffic_signal_controllers) {
     controller->evaluate();
   }
+#endif
 
   return unspecified;
 }
 
 auto TrafficSignals::resolve_reference(Scope & scope) -> void
 {
+#ifndef WITHOUT_ROS
   for (auto & each : traffic_signal_controllers) {
     if (not each->reference.empty()) {
       try {
@@ -60,6 +63,7 @@ auto TrafficSignals::resolve_reference(Scope & scope) -> void
       }
     }
   }
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

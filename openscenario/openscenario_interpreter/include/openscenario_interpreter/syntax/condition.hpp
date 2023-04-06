@@ -75,6 +75,7 @@ private:
   template <typename... Booleans>
   auto update_condition(std::function<bool(Booleans...)> condition) -> Object
   {
+#ifndef WITHOUT_ROS
     histories.push_back({evaluateSimulationTime(), ComplexType::evaluate().as<Boolean>()});
     if (auto iterator = std::find_if(
           std::begin(histories), std::end(histories),
@@ -87,6 +88,9 @@ private:
       current_value = false;
     }
     return asBoolean(current_value);
+#else
+    return unspecified;
+#endif
   }
 };
 

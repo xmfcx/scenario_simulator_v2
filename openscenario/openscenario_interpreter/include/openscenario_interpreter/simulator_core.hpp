@@ -15,6 +15,10 @@
 #ifndef OPENSCENARIO_INTERPRETER__SIMULATOR_CORE_HPP_
 #define OPENSCENARIO_INTERPRETER__SIMULATOR_CORE_HPP_
 
+#ifdef WITHOUT_ROS
+#include <openscenario_interpreter/dependency_control/fake_simulator_core.hpp>
+#else
+
 #include <geometry_msgs/msg/point.hpp>
 #include <geometry_msgs/msg/pose.hpp>
 #include <limits>
@@ -440,5 +444,7 @@ public:
   };
 };
 }  // namespace openscenario_interpreter
+
+#endif
 
 #endif  // OPENSCENARIO_INTERPRETER__SIMULATOR_CORE_HPP_

@@ -15,6 +15,7 @@
 #ifndef OPENSCENARIO_INTERPRETER__SYNTAX__STORYBOARD_HPP_
 #define OPENSCENARIO_INTERPRETER__SYNTAX__STORYBOARD_HPP_
 
+#include <queue>
 #include <nlohmann/json.hpp>
 #include <openscenario_interpreter/scope.hpp>
 #include <openscenario_interpreter/simulator_core.hpp>

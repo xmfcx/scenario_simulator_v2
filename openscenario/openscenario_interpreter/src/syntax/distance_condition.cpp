@@ -95,6 +95,7 @@ auto DistanceCondition::description() const -> std::string
 
 #define APPLY(F, ...) F(__VA_ARGS__)
 
+#ifndef WITHOUT_ROS
 auto DistanceCondition::distance(const EntityRef & triggering_entity) const -> double
 {
   APPLY(SWITCH_COORDINATE_SYSTEM, SWITCH_RELATIVE_DISTANCE_TYPE, SWITCH_FREESPACE, DISTANCE);
@@ -249,6 +250,7 @@ auto DistanceCondition::distance<  //
       }),
     position);
 }
+#endif
 
 auto DistanceCondition::evaluate() -> Object
 {

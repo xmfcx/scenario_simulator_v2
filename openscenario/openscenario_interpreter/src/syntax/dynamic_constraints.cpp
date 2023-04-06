@@ -41,6 +41,7 @@ DynamicConstraints::DynamicConstraints(const pugi::xml_node & node, Scope & scop
 {
 }
 
+#ifndef WITHOUT_ROS
 DynamicConstraints::operator traffic_simulator_msgs::msg::DynamicConstraints() const
 {
   traffic_simulator_msgs::msg::DynamicConstraints dynamic_constraints;
@@ -51,5 +52,6 @@ DynamicConstraints::operator traffic_simulator_msgs::msg::DynamicConstraints() c
   dynamic_constraints.max_speed = max_speed;
   return dynamic_constraints;
 }
+#endif  // WITHOUT_ROS
 }  // namespace syntax
 }  // namespace openscenario_interpreter

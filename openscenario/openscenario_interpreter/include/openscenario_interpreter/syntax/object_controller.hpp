@@ -17,7 +17,10 @@
 
 #include <openscenario_interpreter/scope.hpp>
 #include <pugixml.hpp>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator_msgs/msg/behavior_parameter.hpp>
+#endif
 
 namespace openscenario_interpreter
 {

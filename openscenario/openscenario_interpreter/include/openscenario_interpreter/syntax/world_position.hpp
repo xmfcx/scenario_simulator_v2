@@ -15,13 +15,36 @@
 #ifndef OPENSCENARIO_INTERPRETER__SYNTAX__WORLD_POSITION_HPP_
 #define OPENSCENARIO_INTERPRETER__SYNTAX__WORLD_POSITION_HPP_
 
+#ifndef WITHOUT_ROS
 #include <geometry_msgs/msg/pose.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
+#else
+//namespace geometry_msgs::msg
+//{
+//struct Vector3
+//{
+//  double x, y, z;
+//};
+//struct Quaternion
+//{
+//  double x, y, z, w;
+//};
+//struct Pose
+//{
+//  geometry_msgs::msg::Vector3 position;
+//  geometry_msgs::msg::Quaternion orientation;
+//};
+//}  // namespace geometry_msgs::msg
+#endif  // WITHOUT_ROS
+
 #include <openscenario_interpreter/scope.hpp>
 #include <openscenario_interpreter/simulator_core.hpp>
 #include <openscenario_interpreter/syntax/double.hpp>
 #include <pugixml.hpp>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator_msgs/msg/lanelet_pose.hpp>
+#endif  // WITHOUT_ROS
 
 namespace openscenario_interpreter
 {
@@ -45,9 +68,11 @@ struct WorldPosition : private SimulatorCore::CoordinateSystemConversion
 
   explicit WorldPosition(const pugi::xml_node &, Scope &);
 
+#ifndef WITHOUT_ROS
   explicit operator NativeLanePosition() const;
 
   explicit operator NativeWorldPosition() const;
+#endif
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter

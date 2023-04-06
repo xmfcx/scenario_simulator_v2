@@ -24,14 +24,17 @@
 #include <regex>
 #include <unordered_map>
 
+#ifndef WITHOUT_ROS
 #if __has_include(<tier4_simulation_msgs/msg/user_defined_value.hpp>)
 #include <tier4_simulation_msgs/msg/user_defined_value.hpp>
+#endif
 #endif
 
 namespace openscenario_interpreter
 {
 inline namespace syntax
 {
+#ifndef WITHOUT_ROS
 template <typename T>
 struct MagicSubscription : private rclcpp::Node, public T
 {
@@ -72,12 +75,14 @@ public:
     }
   }
 };
+#endif
 
 UserDefinedValueCondition::UserDefinedValueCondition(const pugi::xml_node & node, Scope & scope)
 : name(readAttribute<String>("name", node, scope)),
   value(readAttribute<String>("value", node, scope)),
   rule(readAttribute<Rule>("rule", node, scope))
 {
+#ifndef WITHOUT_ROS
   if (std::smatch result; std::regex_match(name, result, std::regex(R"(([^.]+)\.(.+))"))) {
     const std::unordered_map<std::string, std::function<Object()>> dispatch{
       std::make_pair(
@@ -166,6 +171,7 @@ UserDefinedValueCondition::UserDefinedValueCondition(const pugi::xml_node & node
   } else {
     throw SyntaxError(__FILE__, ":", __LINE__);
   }
+#endif
 }
 
 auto UserDefinedValueCondition::description() const -> String

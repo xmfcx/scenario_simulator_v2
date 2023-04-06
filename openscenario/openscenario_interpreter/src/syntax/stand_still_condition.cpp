@@ -44,12 +44,16 @@ auto StandStillCondition::description() const -> String
 
 auto StandStillCondition::evaluate() -> Object
 {
+#ifndef WITHOUT_ROS
   results.clear();
 
   return asBoolean(triggering_entities.apply([&](auto && triggering_entity) {
     results.push_back(evaluateStandStill(triggering_entity));
     return compare(results.back(), duration);
   }));
+#else
+  return unspecified;
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

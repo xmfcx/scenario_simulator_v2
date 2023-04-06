@@ -21,7 +21,15 @@
 #include <openscenario_interpreter/syntax/entity_ref.hpp>
 #include <openscenario_interpreter/syntax/orientation.hpp>
 #include <pugixml.hpp>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator_msgs/msg/lanelet_pose.hpp>
+#endif
+
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace openscenario_interpreter
 {
@@ -50,11 +58,13 @@ struct RelativeWorldPosition : private SimulatorCore::CoordinateSystemConversion
 
   explicit RelativeWorldPosition(const pugi::xml_node &, Scope &);
 
+#ifndef WITHOUT_ROS
   operator geometry_msgs::msg::Point() const;
 
   explicit operator NativeLanePosition() const;
 
   explicit operator NativeWorldPosition() const;
+#endif
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter

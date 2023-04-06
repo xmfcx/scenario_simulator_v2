@@ -32,6 +32,7 @@ Pedestrian::Pedestrian(const pugi::xml_node & node, Scope & scope)
 {
 }
 
+#ifndef WITHOUT_ROS
 Pedestrian::operator traffic_simulator_msgs::msg::PedestrianParameters() const
 {
   traffic_simulator_msgs::msg::PedestrianParameters parameter;
@@ -45,5 +46,6 @@ Pedestrian::operator traffic_simulator_msgs::msg::PedestrianParameters() const
 
   return parameter;
 }
+#endif
 }  // namespace syntax
 }  // namespace openscenario_interpreter

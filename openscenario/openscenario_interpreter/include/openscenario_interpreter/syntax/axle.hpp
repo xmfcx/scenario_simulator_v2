@@ -18,7 +18,21 @@
 #include <openscenario_interpreter/scope.hpp>
 #include <openscenario_interpreter/syntax/double.hpp>
 #include <pugixml.hpp>
+#ifndef WITHOUT_ROS
 #include <traffic_simulator_msgs/msg/axle.hpp>
+#else
+namespace traffic_simulator_msgs::msg
+{
+struct Axle
+{
+  using value_type = double;
+
+  value_type position_x, position_z, track_width, wheel_diameter, max_steering;
+
+  Axle() = default;
+};
+}  // namespace traffic_simulator_msgs
+#endif
 
 namespace openscenario_interpreter
 {

@@ -15,7 +15,18 @@
 #ifndef OPENSCENARIO_INTERPRETER__SYNTAX__DIMENSIONS_HPP_
 #define OPENSCENARIO_INTERPRETER__SYNTAX__DIMENSIONS_HPP_
 
+#ifndef WITHOUT_ROS
 #include <geometry_msgs/msg/vector3.hpp>
+#else
+namespace geometry_msgs::msg
+{
+struct Vector3
+{
+  double x, y, z;
+};
+}  // namespace geometry_msgs::msg
+#endif  // WITHOUT_ROS
+
 #include <openscenario_interpreter/scope.hpp>
 #include <openscenario_interpreter/syntax/double.hpp>
 #include <pugixml.hpp>

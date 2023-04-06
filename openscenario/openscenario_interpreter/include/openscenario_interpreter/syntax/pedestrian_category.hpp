@@ -16,7 +16,10 @@
 #define OPENSCENARIO_INTERPRETER__SYNTAX__PEDESTRIAN_CATEGORY_HPP_
 
 #include <iostream>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator_msgs/msg/entity_subtype.hpp>
+#endif
 
 namespace openscenario_interpreter
 {
@@ -54,6 +57,7 @@ struct PedestrianCategory
 
   constexpr operator value_type() const noexcept { return value; }
 
+#ifndef WITHOUT_ROS
   explicit operator traffic_simulator_msgs::msg::EntitySubtype() const
   {
     traffic_simulator_msgs::msg::EntitySubtype result;
@@ -70,6 +74,7 @@ struct PedestrianCategory
 
     return result;
   }
+#endif
 };
 
 auto operator>>(std::istream &, PedestrianCategory &) -> std::istream &;

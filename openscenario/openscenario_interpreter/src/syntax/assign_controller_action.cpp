@@ -43,9 +43,11 @@ AssignControllerAction::AssignControllerAction(const pugi::xml_node & node, Scop
 
 auto AssignControllerAction::operator()(const EntityRef & entity_ref) const -> void
 {
+#ifndef WITHOUT_ROS
   if (is<Controller>()) {
     applyAssignControllerAction(entity_ref, as<Controller>());
   }
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

@@ -17,7 +17,7 @@
 
 #include <boost/lexical_cast.hpp>
 #include <openscenario_interpreter/error.hpp>
-#include <std_msgs/msg/u_int64.hpp>
+#include <openscenario_interpreter/dependency_control/uint64.hpp>
 #include <string>
 
 namespace openscenario_interpreter

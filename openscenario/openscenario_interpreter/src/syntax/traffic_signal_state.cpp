@@ -28,10 +28,12 @@ TrafficSignalState::TrafficSignalState(const pugi::xml_node & node, Scope & scop
 
 auto TrafficSignalState::evaluate() const -> Object
 {
+#ifndef WITHOUT_ROS
   for (traffic_simulator::TrafficLight & traffic_light : toWayIDs(id())) {
     traffic_light.clear();
     traffic_light.set(state);
   };
+#endif
 
   return unspecified;
 }

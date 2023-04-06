@@ -31,6 +31,7 @@ MiscObject::MiscObject(const pugi::xml_node & node, Scope & scope)
 {
 }
 
+#ifndef WITHOUT_ROS
 MiscObject::operator traffic_simulator_msgs::msg::MiscObjectParameters() const
 {
   traffic_simulator_msgs::msg::MiscObjectParameters misc_object_parameters;
@@ -44,5 +45,6 @@ MiscObject::operator traffic_simulator_msgs::msg::MiscObjectParameters() const
 
   return misc_object_parameters;
 }
+#endif
 }  // namespace syntax
 }  // namespace openscenario_interpreter

@@ -54,6 +54,7 @@ auto RelativeDistanceCondition::description() const -> String
   return description.str();
 }
 
+#ifndef WITHOUT_ROS
 template <>
 auto RelativeDistanceCondition::distance<
   CoordinateSystem::entity, RelativeDistanceType::longitudinal, false>(
@@ -191,5 +192,6 @@ auto RelativeDistanceCondition::evaluate() -> Object
     return rule(results.back(), value);
   }));
 }
+#endif  // WITHOUT_ROS
 }  // namespace syntax
 }  // namespace openscenario_interpreter

@@ -16,8 +16,11 @@
 #define OPENSCENARIO_INTERPRETER__SYNTAX__DYNAMICS_SHAPE_HPP_
 
 #include <iostream>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator/data_type/lane_change.hpp>
 #include <traffic_simulator/data_type/speed_change.hpp>
+#endif
 
 namespace openscenario_interpreter
 {
@@ -88,6 +91,7 @@ struct DynamicsShape
 
   constexpr operator value_type() const noexcept { return value; }
 
+#ifndef WITHOUT_ROS
   explicit constexpr operator traffic_simulator::speed_change::Transition() const
   {
     switch (value) {
@@ -111,6 +115,7 @@ struct DynamicsShape
         return {};
     }
   }
+#endif
 };
 
 static_assert(std::is_standard_layout<DynamicsShape>::value, "");

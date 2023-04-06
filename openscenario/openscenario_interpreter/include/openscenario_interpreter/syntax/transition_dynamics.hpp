@@ -44,6 +44,7 @@ struct TransitionDynamics
 
   explicit TransitionDynamics(const pugi::xml_node &, Scope &);
 
+#ifndef WITHOUT_ROS
   explicit operator traffic_simulator::speed_change::Constraint() const
   {
     return traffic_simulator::speed_change::Constraint(
@@ -57,6 +58,7 @@ struct TransitionDynamics
       static_cast<traffic_simulator::lane_change::Constraint::Type>(dynamics_dimension),
       static_cast<double>(value));
   }
+#endif  // WITHOUT_ROS
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter

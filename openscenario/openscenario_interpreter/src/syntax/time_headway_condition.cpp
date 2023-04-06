@@ -48,12 +48,16 @@ auto TimeHeadwayCondition::description() const -> String
 
 auto TimeHeadwayCondition::evaluate() -> Object
 {
+#ifndef WITHOUT_ROS
   results.clear();
 
   return asBoolean(triggering_entities.apply([&](auto && triggering_entity) {
     results.push_back(evaluateTimeHeadway(triggering_entity, entity_ref));
     return compare(results.back(), value);
   }));
+#else
+  return unspecified;
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

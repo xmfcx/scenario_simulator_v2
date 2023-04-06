@@ -86,6 +86,7 @@ public:
 
   explicit TrafficSignalController(const pugi::xml_node &, Scope &);
 
+#ifndef WITHOUT_ROS
   auto changePhaseTo(const String &) -> Object;
 
   auto changePhaseTo(std::list<Phase>::iterator) -> Object;
@@ -103,6 +104,7 @@ public:
   auto notifyBegin() -> void;
 
   auto shouldChangePhaseToBegin() -> bool;
+#endif
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter

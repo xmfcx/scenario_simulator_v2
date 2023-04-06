@@ -30,7 +30,7 @@ inline namespace syntax
 struct ApplyFaultInjection : public CustomCommand
 {
   using CustomCommand::CustomCommand;
-
+#ifndef WITHOUT_ROS
   static auto node() -> rclcpp::Node &
   {
     static rclcpp::Node node{"custom_command_action", "simulation"};
@@ -43,6 +43,7 @@ struct ApplyFaultInjection : public CustomCommand
       "/simulation/events", rclcpp::QoS(1).reliable());
     return *publisher;
   }
+
 
   auto start(const Scope &) -> void override
   {
@@ -74,12 +75,14 @@ struct ApplyFaultInjection : public CustomCommand
 
     publisher().publish(makeFaultInjectionEvents(events));
   }
+#endif
 };
 
 struct ApplyWalkStraightAction : public CustomCommand, private SimulatorCore::ActionApplication
 {
   using CustomCommand::CustomCommand;
 
+#ifndef WITHOUT_ROS
   auto start(const Scope & scope) -> void override
   {
     for (const auto & actor : parameters) {
@@ -90,6 +93,7 @@ struct ApplyWalkStraightAction : public CustomCommand, private SimulatorCore::Ac
       applyWalkStraightAction(actor);
     }
   };
+#endif
 };
 
 struct DebugError : public CustomCommand
@@ -116,12 +120,20 @@ struct DummyLongRunningAction : public CustomCommand, private SimulatorCore::Con
 
   using CustomCommand::CustomCommand;
 
-  auto accomplished() noexcept -> bool override { return end_time < evaluateSimulationTime(); }
+  auto accomplished() noexcept -> bool override
+  {
+#ifndef WITHOUT_ROS
+    return end_time < evaluateSimulationTime();
+#else
+    return true;
+#endif
+  }
 
   auto endsImmediately() const -> bool override { return false; }
 
   auto start(const Scope & scope) -> void override
   {
+#ifndef WITHOUT_ROS
     end_time = evaluateSimulationTime() + boost::lexical_cast<double>(parameters.at(0));
 
     if (not scope.name.empty()) {
@@ -138,6 +150,7 @@ struct DummyLongRunningAction : public CustomCommand, private SimulatorCore::Con
           });
       }
     }
+#endif
   }
 };
 

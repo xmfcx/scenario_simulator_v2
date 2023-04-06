@@ -26,6 +26,7 @@ Waypoint::Waypoint(const pugi::xml_node & node, Scope & scope)
 {
 }
 
+#ifndef WITHOUT_ROS
 Waypoint::operator traffic_simulator_msgs::msg::LaneletPose() const
 {
   return apply<traffic_simulator_msgs::msg::LaneletPose>(
@@ -34,5 +35,6 @@ Waypoint::operator traffic_simulator_msgs::msg::LaneletPose() const
     },
     position);
 }
+#endif  // WITHOUT_ROS
 }  // namespace syntax
 }  // namespace openscenario_interpreter

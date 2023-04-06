@@ -31,6 +31,7 @@ Orientation::Orientation(const pugi::xml_node & node, Scope & scope)
 {
 }
 
+#ifndef WITHOUT_ROS
 Orientation::operator geometry_msgs::msg::Vector3() const
 {
   geometry_msgs::msg::Vector3 result{};
@@ -51,5 +52,6 @@ Orientation::operator geometry_msgs::msg::Vector3() const
 
   return result;
 }
+#endif  // WITHOUT_ROS
 }  // namespace syntax
 }  // namespace openscenario_interpreter

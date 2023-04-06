@@ -24,7 +24,11 @@
 #endif  // OPENSCENARIO_INTERPRETER_RECORD_QUIETLY
 
 #include <boost/algorithm/string.hpp>  // boost::algorithm::replace_all_copy
+
+#ifndef WITHOUT_ROS
 #include <concealer/execute.hpp>
+#endif
+
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -39,6 +43,7 @@ extern pid_t process_id;
 template <typename... Ts>
 auto start(Ts &&... xs) -> pid_t
 {
+#ifndef WITHOUT_ROS
   const std::vector<std::string> command{
     "python3", boost::algorithm::replace_all_copy(concealer::dollar("which ros2"), "\n", ""), "bag",
     "record", std::forward<decltype(xs)>(xs)...};
@@ -63,6 +68,9 @@ auto start(Ts &&... xs) -> pid_t
     default:
       return process_id;
   }
+#else
+  return 0;
+#endif
 }
 
 auto stop() -> void;

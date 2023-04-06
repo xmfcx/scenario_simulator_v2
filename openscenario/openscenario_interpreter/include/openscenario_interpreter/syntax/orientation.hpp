@@ -15,7 +15,18 @@
 #ifndef OPENSCENARIO_INTERPRETER__SYNTAX__ORIENTATION_HPP_
 #define OPENSCENARIO_INTERPRETER__SYNTAX__ORIENTATION_HPP_
 
+#ifndef WITHOUT_ROS
 #include <geometry_msgs/msg/vector3.hpp>
+#else
+//namespace geometry_msgs::msg
+//{
+//struct Vector3
+//{
+//  double x, y, z;
+//};
+//}  // namespace geometry_msgs::msg
+#endif  // WITHOUT_ROS
+
 #include <openscenario_interpreter/scope.hpp>
 #include <openscenario_interpreter/syntax/double.hpp>
 #include <openscenario_interpreter/syntax/reference_context.hpp>
@@ -45,7 +56,9 @@ struct Orientation
 
   explicit Orientation(const pugi::xml_node &, Scope &);
 
+#ifndef WITHOUT_ROS
   operator geometry_msgs::msg::Vector3() const;
+#endif  // WITHOUT_ROS
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter

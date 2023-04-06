@@ -37,11 +37,13 @@ LanePosition::LanePosition(
 {
 }
 
+#ifndef WITHOUT_ROS
 LanePosition::operator NativeLanePosition() const { return makeNativeLanePosition(*this); }
 
 LanePosition::operator NativeWorldPosition() const
 {
   return convert<NativeWorldPosition>(static_cast<NativeLanePosition>(*this));
 }
+#endif
 }  // namespace syntax
 }  // namespace openscenario_interpreter

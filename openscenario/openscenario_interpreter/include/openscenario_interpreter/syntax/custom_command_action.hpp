@@ -18,9 +18,17 @@
 #include <openscenario_interpreter/scope.hpp>
 #include <openscenario_interpreter/simulator_core.hpp>
 #include <pugixml.hpp>
+
+#ifndef WITHOUT_ROS
 #include <rclcpp/rclcpp.hpp>
+#endif
+
 #include <string>
+
+#ifndef WITHOUT_ROS
 #include <tier4_simulation_msgs/msg/simulation_events.hpp>
+#endif
+
 #include <vector>
 
 namespace openscenario_interpreter

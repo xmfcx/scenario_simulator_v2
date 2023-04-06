@@ -18,7 +18,19 @@
 #include <openscenario_interpreter/scope.hpp>
 #include <openscenario_interpreter/syntax/axle.hpp>
 #include <pugixml.hpp>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator_msgs/msg/axles.hpp>
+#else
+namespace traffic_simulator_msgs::msg
+{
+struct Axles
+{
+  Axle front_axle;
+  Axle rear_axle;
+};
+}  // namespace traffic_simulator_msgs::msg
+#endif  // WITHOUT_ROS
 
 namespace openscenario_interpreter
 {

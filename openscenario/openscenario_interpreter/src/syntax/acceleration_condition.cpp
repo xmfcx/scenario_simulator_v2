@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <openscenario_interpreter/simulator_core.hpp>
+//#ifndef WITHOUT_ROS
+//#include <openscenario_interpreter/simulator_core.hpp>
+//#endif
+
 #include <openscenario_interpreter/syntax/acceleration_condition.hpp>
 #include <openscenario_interpreter/utility/print.hpp>
 
@@ -44,12 +47,16 @@ auto AccelerationCondition::description() const -> std::string
 
 auto AccelerationCondition::evaluate() -> Object
 {
+#ifndef WITHOUT_ROS
   results.clear();
 
   return asBoolean(triggering_entities.apply([&](auto && triggering_entity) {
     results.push_back(evaluateAcceleration(triggering_entity));
     return compare(results.back(), value);
   }));
+#else
+  return unspecified;
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

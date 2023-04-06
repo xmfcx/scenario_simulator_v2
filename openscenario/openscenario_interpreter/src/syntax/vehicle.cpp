@@ -32,6 +32,7 @@ Vehicle::Vehicle(const pugi::xml_node & node, Scope & scope)
 {
 }
 
+#ifndef WITHOUT_ROS
 Vehicle::operator traffic_simulator_msgs::msg::VehicleParameters() const
 {
   traffic_simulator_msgs::msg::VehicleParameters parameter;
@@ -47,5 +48,6 @@ Vehicle::operator traffic_simulator_msgs::msg::VehicleParameters() const
 
   return parameter;
 }
+#endif
 }  // namespace syntax
 }  // namespace openscenario_interpreter

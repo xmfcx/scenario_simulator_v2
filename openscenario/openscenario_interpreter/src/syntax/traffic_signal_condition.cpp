@@ -38,6 +38,7 @@ auto TrafficSignalCondition::description() const -> String
 
 auto TrafficSignalCondition::evaluate() -> Object
 {
+#ifndef WITHOUT_ROS
   if (auto && traffic_relation = toWayIDs(boost::lexical_cast<std::int64_t>(name));
       state == "none") {
     current_state = "none";
@@ -59,6 +60,9 @@ auto TrafficSignalCondition::evaluate() -> Object
         return traffic_light.contains(state);
       }));
   }
+#else
+  return unspecified;
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

@@ -12,18 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <openscenario_interpreter/simulator_core.hpp>
-#include <openscenario_interpreter/syntax/delete_entity_action.hpp>
+#ifndef OPENSCENARIO_PREPROCESSOR_UINT16_HPP_
+#define OPENSCENARIO_PREPROCESSOR_UINT16_HPP_
 
-namespace openscenario_interpreter
-{
-inline namespace syntax
-{
-auto DeleteEntityAction::operator()(const EntityRef & entity_ref) const -> void
-{
 #ifndef WITHOUT_ROS
-  applyDeleteEntityAction(entity_ref);
+#include <std_msgs/msg/u_int16.hpp>
+#else
+namespace std_msgs::msg
+{
+struct UInt16
+{
+  using value_type = uint16_t;
+
+  value_type data;
+
+  explicit UInt16(value_type data_ = 0) : data(data_) {}
+};
+}  // namespace std_msgs::msg
 #endif
-}
-}  // namespace syntax
-}  // namespace openscenario_interpreter
+
+#endif  //OPENSCENARIO_PREPROCESSOR_UINT16_HPP_

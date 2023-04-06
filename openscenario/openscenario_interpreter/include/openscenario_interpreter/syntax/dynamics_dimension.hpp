@@ -16,8 +16,11 @@
 #define OPENSCENARIO_INTERPRETER__SYNTAX__DYNAMICS_DIMENSION_HPP_
 
 #include <iostream>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator/data_type/lane_change.hpp>
 #include <traffic_simulator/data_type/speed_change.hpp>
+#endif
 
 namespace openscenario_interpreter
 {
@@ -58,6 +61,7 @@ struct DynamicsDimension
 
   constexpr operator value_type() const noexcept { return value; }
 
+#ifndef WITHOUT_ROS
   explicit constexpr operator traffic_simulator::speed_change::Constraint::Type() const
   {
     switch (value) {
@@ -81,6 +85,7 @@ struct DynamicsDimension
         return {};
     }
   }
+#endif
 };
 
 auto operator>>(std::istream &, DynamicsDimension &) -> std::istream &;

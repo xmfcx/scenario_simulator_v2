@@ -31,7 +31,7 @@ SpeedAction::SpeedAction(const pugi::xml_node & node, Scope & scope)
 auto SpeedAction::accomplished() -> bool
 {
   // See OpenSCENARIO 1.1 User Guide Appendix A: Action tables
-
+#ifndef WITHOUT_ROS
   auto ends_on_reaching_the_speed = [this]() {
     return speed_action_target.is<AbsoluteTargetSpeed>() or
            not speed_action_target.as<RelativeTargetSpeed>().continuous;
@@ -76,6 +76,9 @@ auto SpeedAction::accomplished() -> bool
   } else {
     return true;
   }
+#else
+  return false;
+#endif
 }
 
 auto SpeedAction::endsImmediately() const -> bool
@@ -87,6 +90,7 @@ auto SpeedAction::run() -> void {}
 
 auto SpeedAction::start() -> void
 {
+#ifndef WITHOUT_ROS
   accomplishments.clear();
 
   for (const auto & actor : actors) {
@@ -111,6 +115,7 @@ auto SpeedAction::start() -> void
         speed_action_target.as<RelativeTargetSpeed>().continuous);
     }
   }
+#endif  // WITHOUT_ROS
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

@@ -12,25 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <boost/lexical_cast.hpp>
-#include <openscenario_interpreter/reader/element.hpp>
-#include <openscenario_interpreter/simulator_core.hpp>
-#include <openscenario_interpreter/syntax/controller.hpp>
-#include <openscenario_interpreter/syntax/scenario_object.hpp>
-
-#ifndef WITHOUT_ROS
-#include <traffic_simulator/metrics/out_of_range_metric.hpp>
-#endif
+#ifndef OPENSCENARIO_PREPROCESSOR_FAKE_SIMULATOR_CORE_HPP_
+#define OPENSCENARIO_PREPROCESSOR_FAKE_SIMULATOR_CORE_HPP_
 
 namespace openscenario_interpreter
 {
-inline namespace syntax
+class SimulatorCore
 {
-ScenarioObject::ScenarioObject(const pugi::xml_node & node, Scope & scope)
-: Scope(readAttribute<String>("name", node, scope), scope),
-  EntityObject(node, local()),
-  object_controller(readElement<ObjectController>("ObjectController", node, local()))
-{
-}
-}  // namespace syntax
+public:
+  class CoordinateSystemConversion
+  {
+  };
+
+  class ActionApplication
+  {
+  };
+
+  class ConditionEvaluation
+  {
+  };
+  class NonStandardOperation
+  {
+  };
+};
+
+
 }  // namespace openscenario_interpreter
+
+#endif  //OPENSCENARIO_PREPROCESSOR_FAKE_SIMULATOR_CORE_HPP_

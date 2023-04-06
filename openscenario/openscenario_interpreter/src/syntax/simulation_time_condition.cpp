@@ -38,7 +38,11 @@ auto SimulationTimeCondition::description() const -> String
 
 auto SimulationTimeCondition::evaluate() -> Object
 {
+#ifndef WITHOUT_ROS
   return asBoolean(compare(result = evaluateSimulationTime(), value));
+#else
+  return unspecified;
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

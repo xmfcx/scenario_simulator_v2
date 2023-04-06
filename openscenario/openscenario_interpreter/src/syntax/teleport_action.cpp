@@ -54,6 +54,7 @@ auto TeleportAction::start() const -> void
 
 auto TeleportAction::teleport(const EntityRef & entity_ref, const Position & position) -> void
 {
+#ifndef WITHOUT_ROS
   auto teleport = overload(
     [&](const WorldPosition & position) {
       return applyTeleportAction(entity_ref, static_cast<geometry_msgs::msg::Pose>(position));
@@ -71,6 +72,7 @@ auto TeleportAction::teleport(const EntityRef & entity_ref, const Position & pos
     });
 
   return apply<void>(teleport, position);
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

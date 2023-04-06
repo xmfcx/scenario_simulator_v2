@@ -29,6 +29,7 @@ RelativeWorldPosition::RelativeWorldPosition(const pugi::xml_node & node, Scope 
 {
 }
 
+#ifndef WITHOUT_ROS
 RelativeWorldPosition::operator geometry_msgs::msg::Point() const
 {
   geometry_msgs::msg::Point result;
@@ -51,5 +52,6 @@ RelativeWorldPosition::operator NativeWorldPosition() const
 {
   throw UNSUPPORTED_CONVERSION_DETECTED(RelativeWorldPosition, geometry_msgs::msg::Pose);
 }
+#endif
 }  // namespace syntax
 }  // namespace openscenario_interpreter

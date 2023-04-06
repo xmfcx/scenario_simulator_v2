@@ -50,6 +50,7 @@ auto CollisionCondition::description() const -> std::string
 
 auto CollisionCondition::evaluate() const -> Object
 {
+#ifndef WITHOUT_ROS
   if (
     another_given_entity.is<EntityRef>() and
     global().entities->isAdded(another_given_entity.as<EntityRef>())) {
@@ -60,6 +61,9 @@ auto CollisionCondition::evaluate() const -> Object
     // TODO ByType
     return false_v;
   }
+#else
+  return unspecified;
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

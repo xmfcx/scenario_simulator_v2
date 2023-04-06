@@ -49,6 +49,7 @@ struct RelativeTargetSpeed
 
   explicit RelativeTargetSpeed(const pugi::xml_node &, Scope &);
 
+#ifndef WITHOUT_ROS
   explicit operator traffic_simulator::speed_change::RelativeTargetSpeed() const
   {
     return traffic_simulator::speed_change::RelativeTargetSpeed(
@@ -57,6 +58,7 @@ struct RelativeTargetSpeed
         speed_target_value_type),
       value);
   }
+#endif
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter

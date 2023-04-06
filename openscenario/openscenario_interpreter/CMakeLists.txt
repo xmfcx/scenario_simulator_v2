@@ -9,6 +9,7 @@ endif()
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic -g)
 endif()
+add_definitions("-DBOOST_ALLOW_DEPRECATED_HEADERS")
 
 find_package(ament_cmake_auto REQUIRED)
 
@@ -22,18 +23,31 @@ file(GLOB ${PROJECT_NAME}_POSIX_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/posix/*.
 file(GLOB ${PROJECT_NAME}_SYNTAX_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/syntax/*.cpp)
 file(GLOB ${PROJECT_NAME}_UTILITY_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/*.cpp)
 
-ament_auto_add_library(${PROJECT_NAME} SHARED
+set(COMMON_SOURCES
   ${${PROJECT_NAME}_POSIX_SOURCES}
   ${${PROJECT_NAME}_SYNTAX_SOURCES}
   ${${PROJECT_NAME}_UTILITY_SOURCES}
   src/object.cpp
   src/evaluate.cpp
-  src/openscenario_interpreter.cpp
   src/parameter_distribution.cpp
   src/record.cpp
   src/scope.cpp)
 
+ament_auto_add_library(${PROJECT_NAME} SHARED
+  ${COMMON_SOURCES}
+  src/openscenario_interpreter.cpp)
 target_link_libraries(${PROJECT_NAME} Boost::filesystem glog pugixml)
+
+# library without ROS
+add_library(${PROJECT_NAME}_without_ros SHARED
+  ${COMMON_SOURCES})
+target_link_libraries(${PROJECT_NAME}_without_ros Boost::filesystem glog pugixml)
+target_link_libraries(${PROJECT_NAME}_without_ros ${ament_index_cpp_LIBRARIES} ${scenario_simulator_exception_LIBRARIES})
+target_include_directories(${PROJECT_NAME}_without_ros PUBLIC ${ament_index_cpp_INCLUDE_DIRS} ${scenario_simulator_exception_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME}_without_ros PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_options(${PROJECT_NAME}_without_ros PUBLIC -DWITHOUT_ROS)
 
 # workaround to allow deprecated header to build on both galactic and humble
 if(${tf2_geometry_msgs_VERSION} VERSION_LESS 0.18.0)

@@ -34,6 +34,7 @@ SpeedProfileAction::SpeedProfileAction(const pugi::xml_node & node, Scope & scop
 auto SpeedProfileAction::apply(
   const EntityRef & actor, const SpeedProfileEntry & speed_profile_entry) -> void
 {
+#ifndef WITHOUT_ROS
   auto absolute_target_speed = [&]() { return speed_profile_entry.speed; };
 
   auto relative_target_speed = [&]() {
@@ -82,6 +83,7 @@ auto SpeedProfileAction::apply(
       actor, relative_target_speed(), transition(), constraint(),
       std::isnan(speed_profile_entry.time));
   }
+#endif
 }
 
 auto SpeedProfileAction::accomplished() -> bool
@@ -97,6 +99,7 @@ auto SpeedProfileAction::endsImmediately() const -> bool { return false; }
 
 auto SpeedProfileAction::run() -> void
 {
+#ifndef WITHOUT_ROS
   for (auto && [actor, iter] : accomplishments) {
     auto accomplished = [this](const auto & actor, const auto & speed_profile_entry) {
       if (entity_ref.empty()) {
@@ -113,6 +116,7 @@ auto SpeedProfileAction::run() -> void
       apply(actor, *iter);
     }
   }
+#endif
 }
 
 auto SpeedProfileAction::start() -> void

@@ -42,10 +42,14 @@ auto TrafficSignalControllerCondition::description() const -> String
 
 auto TrafficSignalControllerCondition::evaluate() -> Object
 {
+#ifndef WITHOUT_ROS
   const auto & controller = scope.ref<TrafficSignalController>(traffic_signal_controller_ref);
   current_phase_name = controller.currentPhaseName();
   current_phase_since = controller.currentPhaseSince();
   return asBoolean(current_phase_name == phase);
+#else
+  return unspecified;
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

@@ -25,6 +25,7 @@ BoundingBox::BoundingBox(const pugi::xml_node & node, Scope & scope)
 {
 }
 
+#ifndef WITHOUT_ROS
 BoundingBox::operator traffic_simulator_msgs::msg::BoundingBox() const
 {
   traffic_simulator_msgs::msg::BoundingBox bounding_box;
@@ -35,5 +36,6 @@ BoundingBox::operator traffic_simulator_msgs::msg::BoundingBox() const
 
   return bounding_box;
 }
+#endif
 }  // namespace syntax
 }  // namespace openscenario_interpreter

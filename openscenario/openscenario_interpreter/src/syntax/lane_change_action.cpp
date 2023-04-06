@@ -34,12 +34,16 @@ LaneChangeAction::LaneChangeAction(const pugi::xml_node & node, Scope & scope)
 
 auto LaneChangeAction::accomplished() -> bool
 {
+#ifndef WITHOUT_ROS
   return std::all_of(std::begin(accomplishments), std::end(accomplishments), [](auto && each) {
     const auto is_lane_changing = [](auto &&... xs) {
       return evaluateCurrentState(std::forward<decltype(xs)>(xs)...) == "lane_change";
     };
     return each.second or (each.second = not is_lane_changing(each.first));
   });
+#else
+  return false;
+#endif
 }
 
 auto LaneChangeAction::endsImmediately() noexcept -> bool { return false; }
@@ -48,6 +52,7 @@ auto LaneChangeAction::run() noexcept -> void {}
 
 auto LaneChangeAction::start() -> void
 {
+#ifndef WITHOUT_ROS
   accomplishments.clear();
 
   for (const auto & actor : actors) {
@@ -69,8 +74,10 @@ auto LaneChangeAction::start() -> void
         static_cast<traffic_simulator::lane_change::Constraint>(lane_change_action_dynamics));
     }
   }
+#endif
 }
 
+#ifndef WITHOUT_ROS
 LaneChangeAction::operator traffic_simulator::lane_change::AbsoluteTarget() const
 {
   return traffic_simulator::lane_change::AbsoluteTarget(
@@ -87,5 +94,6 @@ LaneChangeAction::operator traffic_simulator::lane_change::RelativeTarget() cons
     std::abs(lane_change_target.as<RelativeTargetLane>().value),  //
     target_lane_offset);
 }
+#endif
 }  // namespace syntax
 }  // namespace openscenario_interpreter

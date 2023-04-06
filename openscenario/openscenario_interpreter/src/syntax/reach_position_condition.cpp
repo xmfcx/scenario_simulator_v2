@@ -18,7 +18,10 @@
 #include <openscenario_interpreter/syntax/reach_position_condition.hpp>
 #include <openscenario_interpreter/utility/overload.hpp>
 #include <openscenario_interpreter/utility/print.hpp>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator/helper/helper.hpp>
+#endif
 
 namespace openscenario_interpreter
 {
@@ -49,6 +52,7 @@ auto ReachPositionCondition::description() const -> String
 
 auto ReachPositionCondition::evaluate() -> Object
 {
+#ifndef WITHOUT_ROS
   // TODO USE DistanceCondition::distance
   const auto distance = overload(
     [&](const WorldPosition & position, auto && triggering_entity) {
@@ -73,6 +77,9 @@ auto ReachPositionCondition::evaluate() -> Object
     results.push_back(apply<Double>(distance, position, triggering_entity));
     return compare(results.back(), tolerance);
   }));
+#else
+  return unspecified;
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

@@ -46,6 +46,7 @@ TrafficSignalController::TrafficSignalController(const pugi::xml_node & node, Sc
   }
 }
 
+#ifndef WITHOUT_ROS
 auto TrafficSignalController::changePhaseTo(const String & phase_name) -> Object
 {
   auto iter = std::find_if(std::begin(phases), std::end(phases), [&](const auto & phase) {
@@ -125,5 +126,6 @@ auto TrafficSignalController::shouldChangePhaseToBegin() -> bool
     return false;
   }
 }
+#endif  // WITHOUT_ROS
 }  // namespace syntax
 }  // namespace openscenario_interpreter

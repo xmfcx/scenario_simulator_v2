@@ -19,7 +19,14 @@
 #include <openscenario_interpreter/syntax/parameter_declarations.hpp>
 #include <openscenario_interpreter/syntax/properties.hpp>
 #include <pugixml.hpp>
+#ifndef WITHOUT_ROS
 #include <traffic_simulator_msgs/msg/behavior_parameter.hpp>
+#else
+namespace traffic_simulator_msgs::msg
+{
+
+}
+#endif
 #include <utility>
 
 namespace openscenario_interpreter

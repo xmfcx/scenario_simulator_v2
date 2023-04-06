@@ -16,7 +16,7 @@
 #define OPENSCENARIO_INTERPRETER__SYNTAX__UNSIGNED_SHORT_HPP_
 
 #include <iostream>
-#include <std_msgs/msg/u_int16.hpp>
+#include <openscenario_interpreter/dependency_control/uint16.hpp>
 #include <string>
 
 namespace openscenario_interpreter

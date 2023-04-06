@@ -18,7 +18,10 @@
 #include <openscenario_interpreter/scope.hpp>
 #include <openscenario_interpreter/syntax/double.hpp>
 #include <pugixml.hpp>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator_msgs/msg/dynamic_constraints.hpp>
+#endif  // WITHOUT_ROS
 
 namespace openscenario_interpreter
 {
@@ -61,7 +64,9 @@ struct DynamicConstraints
 
   explicit DynamicConstraints(const pugi::xml_node &, Scope &);
 
+#ifndef WITHOUT_ROS
   explicit operator traffic_simulator_msgs::msg::DynamicConstraints() const;
+#endif  // WITHOUT_ROS
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter

@@ -33,10 +33,12 @@ auto TrafficSignalStateAction::run() noexcept -> void {}
 
 auto TrafficSignalStateAction::start() const -> void
 {
+#ifndef WITHOUT_ROS
   for (traffic_simulator::TrafficLight & traffic_light : toWayIDs(id())) {
     traffic_light.clear();
     traffic_light.set(state);
   };
+#endif
 }
 
 auto TrafficSignalStateAction::id() const -> std::int64_t

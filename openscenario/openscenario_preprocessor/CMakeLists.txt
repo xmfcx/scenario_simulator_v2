@@ -18,13 +18,13 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(XcercesC xerces-c)
 
 include_directories(${XcercesC_INCLUDE_DIRS})
-include_directories(${XcercesC_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} SHARED src/${PROJECT_NAME}.cpp)
 target_link_libraries(${PROJECT_NAME} ${XcercesC_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} openscenario_interpreter)
 target_link_libraries(${PROJECT_NAME} glog)
 target_include_directories(${PROJECT_NAME} PUBLIC ${openscenario_interpreter_INCLUDE_DIRS})
+target_compile_options(${PROJECT_NAME} PUBLIC -DWITHOUT_ROS)
 
 add_executable(${PROJECT_NAME}_node src/${PROJECT_NAME}_node.cpp)
 target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME})

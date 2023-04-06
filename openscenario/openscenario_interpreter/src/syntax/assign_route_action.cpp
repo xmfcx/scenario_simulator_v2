@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//#ifndef WITHOUT_ROS
+//#include <openscenario_interpreter/simulator_core.hpp>
+//#endif
+
 #include <openscenario_interpreter/reader/element.hpp>
-#include <openscenario_interpreter/simulator_core.hpp>
 #include <openscenario_interpreter/syntax/assign_route_action.hpp>
 #include <openscenario_interpreter/syntax/catalog_reference.hpp>
 #include <openscenario_interpreter/syntax/route.hpp>
@@ -42,11 +45,13 @@ auto AssignRouteAction::run() -> void {}
 
 auto AssignRouteAction::start() -> void
 {
+#ifndef WITHOUT_ROS
   for (const auto & actor : actors) {
     applyAssignRouteAction(
       actor,
       static_cast<std::vector<traffic_simulator_msgs::msg::LaneletPose>>(route.as<const Route>()));
   }
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

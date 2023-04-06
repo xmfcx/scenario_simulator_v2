@@ -47,6 +47,7 @@ auto AddEntityAction::endsImmediately() noexcept -> bool  //
 
 auto AddEntityAction::operator()(const EntityRef & entity_ref) const -> void
 try {
+#ifndef WITHOUT_ROS
   const auto entity = global().entities->at(entity_ref);
 
   const auto add_entity = overload(
@@ -133,6 +134,7 @@ try {
       "Applying action AddEntityAction to an entity ", std::quoted(entity_ref),
       " that has already been added.");
   }
+#endif
 } catch (const std::out_of_range &) {
   throw SemanticError("No such name of entity ", std::quoted(entity_ref));
 }

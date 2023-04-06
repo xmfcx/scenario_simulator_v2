@@ -41,6 +41,7 @@ Performance::Performance(const pugi::xml_node & node, Scope & scope)
 {
 }
 
+#ifndef WITHOUT_ROS
 Performance::operator traffic_simulator_msgs::msg::Performance() const
 {
   traffic_simulator_msgs::msg::Performance performance;
@@ -51,5 +52,6 @@ Performance::operator traffic_simulator_msgs::msg::Performance() const
   performance.max_speed = max_speed;
   return performance;
 }
+#endif  // WITHOUT_ROS
 }  // namespace syntax
 }  // namespace openscenario_interpreter

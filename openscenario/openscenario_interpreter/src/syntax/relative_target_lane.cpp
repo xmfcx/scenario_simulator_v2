@@ -25,6 +25,7 @@ RelativeTargetLane::RelativeTargetLane(const pugi::xml_node & node, Scope & scop
 {
 }
 
+#ifndef WITHOUT_ROS
 RelativeTargetLane::operator traffic_simulator::lane_change::Direction() const
 {
   if (value < 0) {
@@ -35,5 +36,6 @@ RelativeTargetLane::operator traffic_simulator::lane_change::Direction() const
     return traffic_simulator::lane_change::Direction::LEFT;
   }
 }
+#endif
 }  // namespace syntax
 }  // namespace openscenario_interpreter

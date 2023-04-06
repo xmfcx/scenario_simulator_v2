@@ -62,9 +62,11 @@ struct LaneChangeAction : private Scope,
 
   /*  */ auto start() -> void;
 
+#ifndef WITHOUT_ROS
   explicit operator traffic_simulator::lane_change::AbsoluteTarget() const;
 
   explicit operator traffic_simulator::lane_change::RelativeTarget() const;
+#endif
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter

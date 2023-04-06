@@ -19,7 +19,25 @@
 #include <openscenario_interpreter/syntax/center.hpp>
 #include <openscenario_interpreter/syntax/dimensions.hpp>
 #include <pugixml.hpp>
+
+#ifndef WITHOUT_ROS
 #include <traffic_simulator_msgs/msg/bounding_box.hpp>
+#else
+namespace traffic_simulator_msgs::msg
+{
+struct BoundingBox
+{
+  struct
+  {
+    double x, y, z;
+  } center;
+  struct
+  {
+    double x, y, z;
+  } dimensions;
+};
+}  // namespace traffic_simulator_msgs::msg
+#endif  // WITHOUT_ROS
 
 namespace openscenario_interpreter
 {
@@ -45,7 +63,9 @@ struct BoundingBox
 
   explicit BoundingBox(const pugi::xml_node &, Scope &);
 
+#ifndef WITHOUT_ROS
   explicit operator traffic_simulator_msgs::msg::BoundingBox() const;
+#endif
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter

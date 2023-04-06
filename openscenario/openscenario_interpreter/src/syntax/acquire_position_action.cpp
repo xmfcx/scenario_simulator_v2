@@ -13,7 +13,11 @@
 // limitations under the License.
 
 #include <openscenario_interpreter/reader/element.hpp>
+
+#ifndef WITHOUT_ROS
 #include <openscenario_interpreter/simulator_core.hpp>
+#endif
+
 #include <openscenario_interpreter/syntax/acquire_position_action.hpp>
 #include <openscenario_interpreter/utility/overload.hpp>
 
@@ -28,6 +32,7 @@ AcquirePositionAction::AcquirePositionAction(const pugi::xml_node & node, Scope 
 
 auto AcquirePositionAction::start() -> void
 {
+#ifndef WITHOUT_ROS
   const auto acquire_position = overload(
     [](const WorldPosition & position, auto && actor) {
       return applyAcquirePositionAction(actor, static_cast<geometry_msgs::msg::Pose>(position));
@@ -44,6 +49,7 @@ auto AcquirePositionAction::start() -> void
   for (const auto & actor : actors) {
     apply<void>(acquire_position, position, actor);
   }
+#endif
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

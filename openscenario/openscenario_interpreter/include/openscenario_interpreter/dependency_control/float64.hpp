@@ -12,18 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <openscenario_interpreter/simulator_core.hpp>
-#include <openscenario_interpreter/syntax/delete_entity_action.hpp>
+#ifndef OPENSCENARIO_PREPROCESSOR_FLOAT64_HPP_
+#define OPENSCENARIO_PREPROCESSOR_FLOAT64_HPP_
 
-namespace openscenario_interpreter
-{
-inline namespace syntax
-{
-auto DeleteEntityAction::operator()(const EntityRef & entity_ref) const -> void
-{
 #ifndef WITHOUT_ROS
-  applyDeleteEntityAction(entity_ref);
+#include <std_msgs/msg/float64.hpp>
+#else
+namespace std_msgs::msg
+{
+struct Float64
+{
+  using value_type = double;
+
+  value_type data;
+
+  explicit Float64(value_type value = 0.0) : data(value) {};
+};
+}  // namespace std_msgs::msg
 #endif
-}
-}  // namespace syntax
-}  // namespace openscenario_interpreter
+
+#endif  //OPENSCENARIO_PREPROCESSOR_FLOAT64_HPP
