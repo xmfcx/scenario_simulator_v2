@@ -46,17 +46,21 @@ struct ScenarioSet
 class XMLValidator
 {
 public:
-  XMLValidator(boost::filesystem::path xsd_file) : xsd_file(xsd_file)
-  {
-    // Initialize Xerces library
-    xercesc::XMLPlatformUtils::Initialize();
+  explicit XMLValidator(boost::filesystem::path xsd_file = boost::filesystem::path("")) {
+        // Initialize Xerces library
+        xercesc::XMLPlatformUtils::Initialize();
+        setXSDFile(xsd_file);
   }
+
   ~XMLValidator()
   {
     // Terminate Xerces library
     xercesc::XMLPlatformUtils::Terminate();
   }
-  bool validate(const boost::filesystem::path & xml_file) noexcept
+
+  void setXSDFile(boost::filesystem::path xsd_file) { this->xsd_file = xsd_file; }
+
+  [[nodiscard]] bool validate(const boost::filesystem::path & xml_file) noexcept
   {
     try {
       // Create a DOM parser
@@ -89,7 +93,7 @@ public:
     }
   }
 
-  const boost::filesystem::path xsd_file;
+  boost::filesystem::path xsd_file;
 };
 
 class Preprocessor
