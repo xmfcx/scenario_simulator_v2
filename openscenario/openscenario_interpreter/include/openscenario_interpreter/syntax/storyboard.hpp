@@ -15,7 +15,6 @@
 #ifndef OPENSCENARIO_INTERPRETER__SYNTAX__STORYBOARD_HPP_
 #define OPENSCENARIO_INTERPRETER__SYNTAX__STORYBOARD_HPP_
 
-#include <queue>
 #include <nlohmann/json.hpp>
 #include <openscenario_interpreter/scope.hpp>
 #include <openscenario_interpreter/simulator_core.hpp>
@@ -23,6 +22,7 @@
 #include <openscenario_interpreter/syntax/storyboard_element.hpp>
 #include <openscenario_interpreter/syntax/trigger.hpp>
 #include <pugixml.hpp>
+#include <queue>
 
 namespace openscenario_interpreter
 {

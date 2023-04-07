@@ -16,8 +16,8 @@
 #define OPENSCENARIO_INTERPRETER__SYNTAX__UNSIGNED_INTEGER_HPP_
 
 #include <boost/lexical_cast.hpp>
-#include <openscenario_interpreter/error.hpp>
 #include <openscenario_interpreter/dependency_control/uint64.hpp>
+#include <openscenario_interpreter/error.hpp>
 #include <string>
 
 namespace openscenario_interpreter

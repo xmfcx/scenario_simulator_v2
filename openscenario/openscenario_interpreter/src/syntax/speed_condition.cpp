@@ -53,7 +53,7 @@ auto SpeedCondition::evaluate() -> Object
     return compare(results.back(), value);
   }));
 #else
-return unspecified;
+  return unspecified;
 #endif
 }
 }  // namespace syntax

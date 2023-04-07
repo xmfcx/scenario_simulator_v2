@@ -44,7 +44,6 @@ struct ApplyFaultInjection : public CustomCommand
     return *publisher;
   }
 
-
   auto start(const Scope &) -> void override
   {
     auto & events = parameters;

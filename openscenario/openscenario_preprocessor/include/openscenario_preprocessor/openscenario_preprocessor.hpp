@@ -46,10 +46,11 @@ struct ScenarioSet
 class XMLValidator
 {
 public:
-  explicit XMLValidator(boost::filesystem::path xsd_file = boost::filesystem::path("")) {
-        // Initialize Xerces library
-        xercesc::XMLPlatformUtils::Initialize();
-        setXSDFile(xsd_file);
+  explicit XMLValidator(boost::filesystem::path xsd_file = boost::filesystem::path(""))
+  {
+    // Initialize Xerces library
+    xercesc::XMLPlatformUtils::Initialize();
+    setXSDFile(xsd_file);
   }
 
   ~XMLValidator()

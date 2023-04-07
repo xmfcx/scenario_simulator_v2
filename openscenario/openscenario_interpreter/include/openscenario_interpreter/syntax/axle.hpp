@@ -31,7 +31,7 @@ struct Axle
 
   Axle() = default;
 };
-}  // namespace traffic_simulator_msgs
+}  // namespace traffic_simulator_msgs::msg
 #endif
 
 namespace openscenario_interpreter

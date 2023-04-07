@@ -28,7 +28,7 @@ struct UInt64
 
   explicit UInt64(value_type data_ = 0) : data(data_) {}
 };
-}  // namespace std_msgs
+}  // namespace std_msgs::msg
 #endif
 
 #endif  //OPENSCENARIO_PREPROCESSOR_UINT64_HPP_

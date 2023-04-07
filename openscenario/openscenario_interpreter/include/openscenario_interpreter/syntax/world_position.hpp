@@ -18,23 +18,6 @@
 #ifndef WITHOUT_ROS
 #include <geometry_msgs/msg/pose.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
-#else
-//namespace geometry_msgs::msg
-//{
-//struct Vector3
-//{
-//  double x, y, z;
-//};
-//struct Quaternion
-//{
-//  double x, y, z, w;
-//};
-//struct Pose
-//{
-//  geometry_msgs::msg::Vector3 position;
-//  geometry_msgs::msg::Quaternion orientation;
-//};
-//}  // namespace geometry_msgs::msg
 #endif  // WITHOUT_ROS
 
 #include <openscenario_interpreter/scope.hpp>

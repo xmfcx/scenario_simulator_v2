@@ -36,7 +36,6 @@ public:
   };
 };
 
-
 }  // namespace openscenario_interpreter
 
 #endif  //OPENSCENARIO_PREPROCESSOR_FAKE_SIMULATOR_CORE_HPP_

@@ -26,7 +26,7 @@ struct Float64
 
   value_type data;
 
-  explicit Float64(value_type value = 0.0) : data(value) {};
+  explicit Float64(value_type value = 0.0) : data(value){};
 };
 }  // namespace std_msgs::msg
 #endif

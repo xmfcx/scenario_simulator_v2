@@ -17,14 +17,6 @@
 
 #ifndef WITHOUT_ROS
 #include <geometry_msgs/msg/vector3.hpp>
-#else
-//namespace geometry_msgs::msg
-//{
-//struct Vector3
-//{
-//  double x, y, z;
-//};
-//}  // namespace geometry_msgs::msg
 #endif  // WITHOUT_ROS
 
 #include <openscenario_interpreter/scope.hpp>
