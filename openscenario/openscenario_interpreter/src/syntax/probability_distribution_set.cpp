@@ -32,15 +32,22 @@ ProbabilityDistributionSet::ProbabilityDistributionSet(
   elements(
     generateVector(readElements<ProbabilityDistributionSetElement, 1>("Element", node, scope))),
   adaptor(elements),
-  distribute(adaptor.probabilities.begin(), adaptor.probabilities.end()),
-  random_engine(scope.seed)
+  distribute(adaptor.probabilities.begin(), adaptor.probabilities.end())
 {
 }
 
-std::vector<Object> ProbabilityDistributionSet::derive()
+auto ProbabilityDistributionSet::derive() -> Object
 {
-  size_t index = distribute(random_engine);
-  return std::vector<Object>({elements.at(index)});
+  std::size_t index = distribute(random_engine);
+  return make<String>(elements.at(index).value);
+}
+
+auto ProbabilityDistributionSet::derive(
+  std::size_t local_index, std::size_t local_size, std::size_t global_index,
+  std::size_t global_size) -> ParameterList
+{
+  std::size_t index = distribute(random_engine);
+  return ParameterList{{"", make<String>(elements.at(index).value)}};
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

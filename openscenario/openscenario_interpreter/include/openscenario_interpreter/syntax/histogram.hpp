@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef OPENSCENARIO_INTERPRETER__HISTOGRAM_HPP_
-#define OPENSCENARIO_INTERPRETER__HISTOGRAM_HPP_
+#ifndef OPENSCENARIO_INTERPRETER__SYNTAX__HISTOGRAM_HPP_
+#define OPENSCENARIO_INTERPRETER__SYNTAX__HISTOGRAM_HPP_
 
 #include <openscenario_interpreter/parameter_distribution.hpp>
 #include <openscenario_interpreter/scope.hpp>
@@ -34,7 +34,7 @@ inline namespace syntax
  *
  * -------------------------------------------------------------------------- */
 
-struct Histogram : public ComplexType, private Scope, public SingleParameterDistributionBase
+struct Histogram : public ComplexType, private Scope, public StochasticParameterDistributionBase
 {
   /**
    * Note: HistogramBin must be stored in continuous range and ascending order to `bins`
@@ -58,11 +58,14 @@ struct Histogram : public ComplexType, private Scope, public SingleParameterDist
 
   std::piecewise_constant_distribution<Double::value_type> distribute;
 
-  std::mt19937 random_engine;
-
   explicit Histogram(const pugi::xml_node &, Scope & scope);
-  auto derive() -> std::vector<Object> override;
+
+  auto derive() -> Object override;
+
+  auto derive(
+    std::size_t local_index, std::size_t local_size, std::size_t global_index,
+    std::size_t global_size) -> ParameterList override;
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter
-#endif  // OPENSCENARIO_INTERPRETER__HISTOGRAM_HPP_
+#endif  // OPENSCENARIO_INTERPRETER__SYNTAX__HISTOGRAM_HPP_

@@ -23,14 +23,17 @@ UniformDistribution::UniformDistribution(
   const pugi::xml_node & node, openscenario_interpreter::Scope & scope)
 : Scope(scope),
   range(readElement<Range>("Range", node, scope)),
-  distribute(range.lower_limit.data, range.upper_limit.data),
-  random_engine(scope.seed)
+  distribute(range.lower_limit.data, range.upper_limit.data)
 {
 }
 
-std::vector<Object> UniformDistribution::derive()
+auto UniformDistribution::derive() -> Object { return make<Double>(distribute(random_engine)); }
+
+auto UniformDistribution::derive(
+  std::size_t local_index, std::size_t local_size, std::size_t global_index,
+  std::size_t global_size) -> ParameterList
 {
-  return std::vector<Object>({make<Double>(distribute(random_engine))});
+  return ParameterList({{"", make<Double>(distribute(random_engine))}});
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

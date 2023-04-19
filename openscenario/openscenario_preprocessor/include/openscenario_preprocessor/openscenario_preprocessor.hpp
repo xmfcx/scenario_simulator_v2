@@ -18,12 +18,7 @@
 #include <deque>
 #include <memory>
 #include <openscenario_interpreter/syntax/open_scenario.hpp>
-#include <xercesc/framework/LocalFileInputSource.hpp>
-#include <xercesc/parsers/XercesDOMParser.hpp>
-#include <xercesc/sax/ErrorHandler.hpp>
-#include <xercesc/sax/HandlerBase.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-#include <xercesc/validators/common/Grammar.hpp>
+#include <openscenario_utility/xml_validator.hpp>
 
 namespace openscenario_preprocessor
 {
@@ -43,64 +38,13 @@ struct ScenarioSet
   float frame_rate;
 };
 
-class XMLValidator
-{
-public:
-  explicit XMLValidator(boost::filesystem::path xsd_file = boost::filesystem::path(""))
-  {
-    // Initialize Xerces library
-    xercesc::XMLPlatformUtils::Initialize();
-    setXSDFile(xsd_file);
-  }
-
-  ~XMLValidator()
-  {
-    // Terminate Xerces library
-    xercesc::XMLPlatformUtils::Terminate();
-  }
-
-  void setXSDFile(boost::filesystem::path xsd_file) { this->xsd_file = xsd_file; }
-
-  [[nodiscard]] bool validate(const boost::filesystem::path & xml_file) noexcept
-  {
-    try {
-      // Create a DOM parser
-      xercesc::XercesDOMParser parser;
-
-      // Load the XSD file
-      parser.loadGrammar(xsd_file.string().c_str(), xercesc::Grammar::SchemaGrammarType, true);
-
-      // Set the validation scheme
-      xercesc::ErrorHandler * error_handler = new xercesc::HandlerBase();
-      parser.setErrorHandler(error_handler);
-      parser.setValidationScheme(xercesc::XercesDOMParser::Val_Always);
-      parser.setDoNamespaces(true);
-      parser.setDoSchema(true);
-      parser.setValidationConstraintFatal(true);
-
-      // Parse the XML file
-      parser.parse(xml_file.string().c_str());
-
-      int error_count = parser.getErrorCount();
-      delete error_handler;
-      return error_count == 0;
-
-    } catch (const xercesc::XMLException & ex) {
-      std::cerr << "Error: " << ex.getMessage() << std::endl;
-      return false;
-    } catch (...) {
-      std::cerr << "Error: Unknown exception" << std::endl;
-      return false;
-    }
-  }
-
-  boost::filesystem::path xsd_file;
-};
-
 class Preprocessor
 {
 public:
-  explicit Preprocessor() : xml_validator("") {}
+  explicit Preprocessor(boost::filesystem::path xsd_path, boost::filesystem::path output_directory)
+  : xml_validator(xsd_path), output_directory(output_directory)
+  {
+  }
 
 protected:
   void preprocessScenario(ScenarioSet &);
@@ -113,9 +57,10 @@ protected:
 
   std::mutex preprocessed_scenarios_mutex;
 
-  XMLValidator xml_validator;
-};
+  openscenario_utility::XMLValidator xml_validator;
 
+  boost::filesystem::path output_directory;
+};
 }  // namespace openscenario_preprocessor
 
 #endif  // OPENSCENARIO_PREPROCESSOR__OPENSCENARIO_PREPROCESSOR_HPP_

@@ -24,14 +24,20 @@ PoissonDistribution::PoissonDistribution(
 : Scope(scope),
   range(readElement<Range>("Range", node, scope)),
   expected_value(readAttribute<Double>("expectedValue", node, scope)),
-  distribute(expected_value.data),
-  random_engine(scope.seed)
+  distribute(expected_value.data)
 {
 }
 
-std::vector<Object> PoissonDistribution::derive()
+auto PoissonDistribution::derive() -> Object
 {
-  return std::vector<Object>({make<Double>(distribute(random_engine))});
+  return make<Double>(range.evaluate(distribute(random_engine)));
+}
+
+ParameterList PoissonDistribution::derive(
+  std::size_t local_index, std::size_t local_size, std::size_t global_index,
+  std::size_t global_size)
+{
+  return ParameterList({{"", make<Double>(range.evaluate(distribute(random_engine)))}});
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

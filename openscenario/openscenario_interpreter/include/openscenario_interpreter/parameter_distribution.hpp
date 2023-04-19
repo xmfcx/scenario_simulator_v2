@@ -17,6 +17,7 @@
 
 #include <memory>
 #include <openscenario_interpreter/object.hpp>
+#include <scenario_simulator_exception/exception.hpp>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -29,19 +30,36 @@ using ParameterListSharedPtr = std::shared_ptr<ParameterList>;
 using ParameterDistribution = std::vector<ParameterListSharedPtr>;
 using SingleUnnamedParameterDistribution = std::vector<Object>;
 
+struct ParallelDerivableParameterDistributionBase
+{
+  virtual auto derive(
+    std::size_t local_index, std::size_t local_size, std::size_t global_index,
+    std::size_t global_size) -> ParameterList = 0;
+
+  virtual auto getNumberOfDeriveScenarios() const -> std::size_t
+  {
+    throw Error("getNumberOfDeriveScenarios() is not implemented");
+  }
+};
+
 // generator types distribution
-struct SingleParameterDistributionBase
+struct SingleParameterDistributionBase : public ParallelDerivableParameterDistributionBase
 {
   virtual auto derive() -> SingleUnnamedParameterDistribution = 0;
 };
 
-struct MultiParameterDistributionBase
+struct MultiParameterDistributionBase : public ParallelDerivableParameterDistributionBase
 {
   virtual auto derive() -> ParameterDistribution = 0;
 };
 
+struct StochasticParameterDistributionBase : public ParallelDerivableParameterDistributionBase
+{
+  virtual auto derive() -> Object = 0;
+};
+
 // container types of distribution data generator
-struct ParameterDistributionContainer
+struct ParameterDistributionContainer : public ParallelDerivableParameterDistributionBase
 {
   virtual auto derive() -> ParameterDistribution = 0;
 };

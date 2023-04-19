@@ -25,13 +25,17 @@ NormalDistribution::NormalDistribution(
   range(readElement<Range>("Range", node, scope)),
   expected_value(readAttribute<Double>("expectedValue", node, scope)),
   variance(readAttribute<Double>("variance", node, scope)),
-  distribute(static_cast<double>(expected_value.data), static_cast<double>(variance.data)),
-  random_engine(scope.seed)
+  distribute(static_cast<double>(expected_value.data), static_cast<double>(variance.data))
 {
 }
-std::vector<Object> NormalDistribution::derive()
+
+auto NormalDistribution::derive() -> Object { return make<Double>(distribute(random_engine)); }
+
+auto NormalDistribution::derive(
+  std::size_t local_index, std::size_t local_size, std::size_t global_index,
+  std::size_t global_size) -> ParameterList
 {
-  return std::vector<Object>({make<Double>(distribute(random_engine))});
+  return ParameterList({{"", make<Double>(distribute(random_engine))}});
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

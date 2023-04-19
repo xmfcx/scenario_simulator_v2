@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef OPENSCENARIO_INTERPRETER__STOCHASTIC_HPP_
-#define OPENSCENARIO_INTERPRETER__STOCHASTIC_HPP_
+#ifndef OPENSCENARIO_INTERPRETER__SYNTAX__STOCHASTIC_HPP_
+#define OPENSCENARIO_INTERPRETER__SYNTAX__STOCHASTIC_HPP_
 
 #include <openscenario_interpreter/parameter_distribution.hpp>
 #include <openscenario_interpreter/scope.hpp>
@@ -39,26 +39,24 @@ inline namespace syntax
  *
  * -------------------------------------------------------------------------- */
 
-struct Stochastic : public ComplexType, public ParameterDistributionContainer
+struct Stochastic : public ComplexType, public ParameterDistributionContainer, private Scope
 {
   const UnsignedInt number_of_test_runs;
 
   const Double random_seed;
 
-  StochasticDistribution stochastic_distribution;
+  std::list<StochasticDistribution> stochastic_distributions;
 
   explicit Stochastic(const pugi::xml_node &, Scope & scope);
 
-  auto derive() -> ParameterDistribution override
-  {
-    ParameterDistribution distribution;
-    for (size_t i = 0; i < number_of_test_runs; i++) {
-      auto derived = stochastic_distribution.derive();
-      distribution.insert(distribution.end(), derived.begin(), derived.end());
-    }
-    return distribution;
-  }
+  auto derive() -> ParameterDistribution override;
+
+  auto derive(
+    std::size_t local_index, std::size_t local_size, std::size_t global_index,
+    std::size_t global_size) -> ParameterList override;
+
+  auto getNumberOfDeriveScenarios() const -> std::size_t override { return number_of_test_runs; }
 };
 }  // namespace syntax
 }  // namespace openscenario_interpreter
-#endif  // OPENSCENARIO_INTERPRETER__STOCHASTIC_HPP_
+#endif  // OPENSCENARIO_INTERPRETER__SYNTAX__STOCHASTIC_HPP_

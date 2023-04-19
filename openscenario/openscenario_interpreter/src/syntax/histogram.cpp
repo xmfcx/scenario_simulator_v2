@@ -24,14 +24,17 @@ Histogram::Histogram(const pugi::xml_node & node, openscenario_interpreter::Scop
   bins(readElements<HistogramBin, 1>("Bin", node, scope)),
   bin_adaptor(bins),
   distribute(
-    bin_adaptor.intervals.begin(), bin_adaptor.intervals.end(), bin_adaptor.densities.begin()),
-  random_engine(scope.seed)
+    bin_adaptor.intervals.begin(), bin_adaptor.intervals.end(), bin_adaptor.densities.begin())
 {
 }
 
-std::vector<Object> Histogram::derive()
+auto Histogram::derive() -> Object { return make<Double>(distribute(random_engine)); }
+
+auto Histogram::derive(
+  std::size_t local_index, std::size_t local_size, std::size_t global_index,
+  std::size_t global_size) -> ParameterList
 {
-  return std::vector<Object>({make<Double>(distribute(random_engine))});
+  return ParameterList({{"", make<Double>(distribute(random_engine))}});
 }
 }  // namespace syntax
 }  // namespace openscenario_interpreter

@@ -15,6 +15,8 @@
     "engageable",
     "libunwind",
     "npcs",
+    "okta",
+    "oktas",
     "oneof",
     "parametersetaction",
     "Petrich",
@@ -25,6 +27,8 @@
     "randomizers",
     "subspline",
     "TESTRANDOMIZER",
-    "travelling"
+    "travelling",
+    "xerces",
+    "xercesc"
   ]
 }

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//#include <glog/logging.h>
-
+#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <cstdlib>
 #include <memory>
 #include <openscenario_preprocessor/openscenario_preprocessor.hpp>
@@ -25,9 +24,14 @@
 class PreprocessorNode : public rclcpp::Node, public openscenario_preprocessor::Preprocessor
 {
 public:
-  explicit PreprocessorNode(const rclcpp::NodeOptions & options)
+  explicit PreprocessorNode(const rclcpp::NodeOptions & options, const std::string xsd_path)
   : rclcpp::Node("preprocessor", options),
-    openscenario_preprocessor::Preprocessor(),
+    openscenario_preprocessor::Preprocessor(
+      xsd_path,
+      [this] {
+        declare_parameter<std::string>("output_directory", "/tmp/openscenario_preprocessor");
+        return get_parameter("output_directory").as_string();
+      }()),
     load_server(create_service<openscenario_preprocessor_msgs::srv::Load>(
       "~/load",
       [this](
@@ -84,16 +88,16 @@ private:
 
 int main(const int argc, char const * const * const argv)
 {
-  //  google::InitGoogleLogging(argv[0]);
-  //  google::InstallFailureSignalHandler();
-
   rclcpp::init(argc, argv);
 
   rclcpp::executors::SingleThreadedExecutor executor{};
 
   rclcpp::NodeOptions options{};
 
-  auto node = std::make_shared<PreprocessorNode>(options);
+  std::string xsd_path = ament_index_cpp::get_package_share_directory("openscenario_utility") +
+                         "/../lib/openscenario_utility/resources/OpenSCENARIO-1.2.xsd";
+
+  auto node = std::make_shared<PreprocessorNode>(options, xsd_path);
 
   executor.add_node((*node).get_node_base_interface());
 

@@ -45,19 +45,32 @@ void Preprocessor::preprocessScenario(ScenarioSet & scenario)
                 .select_node(pugi::xpath_query{"/OpenSCENARIO/ParameterDeclarations"})
                 .node();
 
-            for (const auto & [name, parameter] : *parameter_list.value()) {
+            // embedding parameter values
+            for (const auto & [name, value] : *parameter_list.value()) {
               if (auto parameter_node =
                     parameter_declarations.find_child_by_attribute("name", name.c_str());
                   parameter_node) {
-                parameter_node.attribute("value").set_value(parameter.as<std::string>().c_str());
+                std::stringstream parameter_stringstream;
+                parameter_stringstream << value;
+                parameter_node.attribute("value").set_value(parameter_stringstream.str().c_str());
               } else {
                 std::cout << "Parameter " << name << " not found in base scenario" << std::endl;
               }
             }
 
             ScenarioSet derived_scenario = scenario;
-            derived_scenario.path += "." + std::to_string(parameter_list.index());
 
+            // generate new scenario file name
+            boost::filesystem::path derived_scenario_path(derived_scenario.path);
+            derived_scenario_path = output_directory / derived_scenario_path.filename();
+            derived_scenario_path.replace_extension(
+              std::to_string(parameter_list.index()) + derived_scenario_path.extension().string());
+
+            derived_scenario.path = derived_scenario_path.string();
+
+            if (not boost::filesystem::exists(output_directory)) {
+              boost::filesystem::create_directories(output_directory);
+            }
             derived_script.save_file(derived_scenario.path.c_str());
 
             preprocessed_scenarios.emplace_back(derived_scenario);
