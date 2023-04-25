@@ -116,6 +116,7 @@ public:
         simulation_interface::toProto(parameters, *req.mutable_parameters());
         req.mutable_parameters()->set_name(name);
         req.set_is_ego(behavior == VehicleBehavior::autoware());
+        //TODO: fill asset key and pose
         zeromq_client_.call(req, res);
         return res.result().success();
       }
@@ -143,6 +144,7 @@ public:
         simulation_api_schema::SpawnPedestrianEntityResponse res;
         simulation_interface::toProto(parameters, *req.mutable_parameters());
         req.mutable_parameters()->set_name(name);
+        //TODO: fill asset key and pose
         zeromq_client_.call(req, res);
         return res.result().success();
       }
@@ -169,6 +171,7 @@ public:
         simulation_api_schema::SpawnMiscObjectEntityResponse res;
         simulation_interface::toProto(parameters, *req.mutable_parameters());
         req.mutable_parameters()->set_name(name);
+        //TODO: fill asset key and pose
         zeromq_client_.call(req, res);
         return res.result().success();
       }

@@ -172,19 +172,20 @@ auto API::setEntityStatus(
   setEntityStatus(name, status);
 }
 
-bool API::initialize(double realtime_factor, double step_time)
+bool API::initialize(double /*realtime_factor*/, double step_time)
 {
   clock_.initialize(-1 * configuration.initialize_duration, step_time);
 
   if (configuration.standalone_mode) {
     return true;
   } else {
-    simulation_api_schema::InitializeRequest req;
-    req.set_step_time(step_time);
-    req.set_realtime_factor(realtime_factor);
-    simulation_api_schema::InitializeResponse res;
-    zeromq_client_.call(req, res);
-    return res.result().success();
+//    simulation_api_schema::InitializeRequest req;
+//    req.set_step_time(step_time);
+//    req.set_realtime_factor(realtime_factor);
+//    simulation_api_schema::InitializeResponse res;
+//    zeromq_client_.call(req, res);
+//    return res.result().success();
+    return true;
   }
 }
 
@@ -249,13 +250,14 @@ bool API::updateSensorFrame()
   if (configuration.standalone_mode) {
     return true;
   } else {
-    simulation_api_schema::UpdateSensorFrameRequest req;
-    req.set_current_time(clock_.getCurrentSimulationTime());
-    simulation_interface::toProto(
-      clock_.getCurrentRosTimeAsMsg().clock, *req.mutable_current_ros_time());
-    simulation_api_schema::UpdateSensorFrameResponse res;
-    zeromq_client_.call(req, res);
-    return res.result().success();
+//    simulation_api_schema::UpdateSensorFrameRequest req;
+//    req.set_current_time(clock_.getCurrentSimulationTime());
+//    simulation_interface::toProto(
+//      clock_.getCurrentRosTimeAsMsg().clock, *req.mutable_current_ros_time());
+//    simulation_api_schema::UpdateSensorFrameResponse res;
+//    zeromq_client_.call(req, res);
+//    return res.result().success();
+    return true;
   }
 }
 
@@ -278,45 +280,46 @@ bool API::updateTrafficLightsInSim()
 
 bool API::updateEntityStatusInSim()
 {
-  simulation_api_schema::UpdateEntityStatusRequest req;
-  if (entity_manager_ptr_->isEgoSpawned()) {
-    simulation_interface::toProto(
-      asAutoware(entity_manager_ptr_->getEgoName()).getVehicleCommand(),
-      *req.mutable_vehicle_command());
-    req.set_ego_entity_status_before_update_is_empty(false);
-    simulation_interface::toProto(
-      entity_manager_ptr_->getEntityStatusBeforeUpdate(entity_manager_ptr_->getEgoName()),
-      *req.mutable_ego_entity_status_before_update());
-  }
-  for (const auto & name : entity_manager_ptr_->getEntityNames()) {
-    auto status = entity_manager_ptr_->getEntityStatus(name);
-    traffic_simulator_msgs::EntityStatus proto;
-    status.name = name;
-    simulation_interface::toProto(status, proto);
-    *req.add_status() = proto;
-  }
-  simulation_api_schema::UpdateEntityStatusResponse res;
-  zeromq_client_.call(req, res);
-  for (const auto & status : res.status()) {
-    traffic_simulator_msgs::msg::EntityStatus status_msg;
-    status_msg = entity_manager_ptr_->getEntityStatus(status.name());
-    geometry_msgs::msg::Pose pose;
-    simulation_interface::toMsg(status.pose(), pose);
-    status_msg.pose = pose;
-    const auto lanelet_pose = entity_manager_ptr_->toLaneletPose(
-      pose, entity_manager_ptr_->getEntityStatus(status.name()).bounding_box, false);
-    if (lanelet_pose) {
-      status_msg.lanelet_pose_valid = true;
-      status_msg.lanelet_pose = lanelet_pose.value();
-    } else {
-      status_msg.lanelet_pose_valid = false;
-      status_msg.lanelet_pose = traffic_simulator_msgs::msg::LaneletPose();
-    }
-    simulation_interface::toMsg(status.action_status().twist(), status_msg.action_status.twist);
-    simulation_interface::toMsg(status.action_status().accel(), status_msg.action_status.accel);
-    entity_manager_ptr_->setEntityStatus(status.name(), status_msg);
-  }
-  return res.result().success();
+//  simulation_api_schema::UpdateEntityStatusRequest req;
+//  if (entity_manager_ptr_->isEgoSpawned()) {
+//    simulation_interface::toProto(
+//      asAutoware(entity_manager_ptr_->getEgoName()).getVehicleCommand(),
+//      *req.mutable_vehicle_command());
+//    req.set_ego_entity_status_before_update_is_empty(false);
+//    simulation_interface::toProto(
+//      entity_manager_ptr_->getEntityStatusBeforeUpdate(entity_manager_ptr_->getEgoName()),
+//      *req.mutable_ego_entity_status_before_update());
+//  }
+//  for (const auto & name : entity_manager_ptr_->getEntityNames()) {
+//    auto status = entity_manager_ptr_->getEntityStatus(name);
+//    traffic_simulator_msgs::EntityStatus proto;
+//    status.name = name;
+//    simulation_interface::toProto(status, proto);
+//    *req.add_status() = proto;
+//  }
+//  simulation_api_schema::UpdateEntityStatusResponse res;
+//  zeromq_client_.call(req, res);
+//  for (const auto & status : res.status()) {
+//    traffic_simulator_msgs::msg::EntityStatus status_msg;
+//    status_msg = entity_manager_ptr_->getEntityStatus(status.name());
+//    geometry_msgs::msg::Pose pose;
+//    simulation_interface::toMsg(status.pose(), pose);
+//    status_msg.pose = pose;
+//    const auto lanelet_pose = entity_manager_ptr_->toLaneletPose(
+//      pose, entity_manager_ptr_->getEntityStatus(status.name()).bounding_box, false);
+//    if (lanelet_pose) {
+//      status_msg.lanelet_pose_valid = true;
+//      status_msg.lanelet_pose = lanelet_pose.value();
+//    } else {
+//      status_msg.lanelet_pose_valid = false;
+//      status_msg.lanelet_pose = traffic_simulator_msgs::msg::LaneletPose();
+//    }
+//    simulation_interface::toMsg(status.action_status().twist(), status_msg.action_status.twist);
+//    simulation_interface::toMsg(status.action_status().accel(), status_msg.action_status.accel);
+//    entity_manager_ptr_->setEntityStatus(status.name(), status_msg);
+//  }
+//  return res.result().success();
+  return true;
 }
 
 bool API::updateFrame()
@@ -326,23 +329,23 @@ bool API::updateFrame()
   traffic_controller_ptr_->execute();
 
   if (not configuration.standalone_mode) {
-    simulation_api_schema::UpdateFrameRequest req;
-    req.set_current_time(clock_.getCurrentSimulationTime());
-    simulation_interface::toProto(
-      clock_.getCurrentRosTimeAsMsg().clock, *req.mutable_current_ros_time());
-    simulation_api_schema::UpdateFrameResponse res;
-    zeromq_client_.call(req, res);
-    if (!res.result().success()) {
-      return false;
-    }
-    entity_manager_ptr_->broadcastEntityTransform();
-    clock_.update();
-    clock_pub_->publish(clock_.getCurrentRosTimeAsMsg());
-    debug_marker_pub_->publish(entity_manager_ptr_->makeDebugMarker());
-    if (!updateEntityStatusInSim()) {
-      return false;
-    }
-    updateTrafficLightsInSim();
+//    simulation_api_schema::UpdateFrameRequest req;
+//    req.set_current_time(clock_.getCurrentSimulationTime());
+//    simulation_interface::toProto(
+//      clock_.getCurrentRosTimeAsMsg().clock, *req.mutable_current_ros_time());
+//    simulation_api_schema::UpdateFrameResponse res;
+//    zeromq_client_.call(req, res);
+//    if (!res.result().success()) {
+//      return false;
+//    }
+//    entity_manager_ptr_->broadcastEntityTransform();
+//    clock_.update();
+//    clock_pub_->publish(clock_.getCurrentRosTimeAsMsg());
+//    debug_marker_pub_->publish(entity_manager_ptr_->makeDebugMarker());
+//    if (!updateEntityStatusInSim()) {
+//      return false;
+//    }
+//    updateTrafficLightsInSim();
     return updateSensorFrame();
   } else {
     entity_manager_ptr_->broadcastEntityTransform();
