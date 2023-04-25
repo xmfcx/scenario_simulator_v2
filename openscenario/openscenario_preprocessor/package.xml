@@ -11,7 +11,7 @@
 
   <depend>openscenario_interpreter</depend>
   <depend>openscenario_preprocessor_msgs</depend>
-  <depend>openscenario_utility</depend>
+  <depend>openscenario_validator</depend>
   <depend>rclcpp</depend>
   <depend>xerces</depend>
 
