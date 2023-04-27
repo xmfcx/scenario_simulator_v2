@@ -307,7 +307,7 @@ void EgoEntity::onUpdate(double current_time, double step_time, bool /*warp_mode
 {
   autoware->rethrow();
 
-  EntityBase::onUpdate(current_time, step_time);
+  EntityBase::onUpdate(current_time, step_time, false);
 
   if (npc_logic_started_) {
     Eigen::VectorXd input(vehicle_model_ptr_->getDimU());

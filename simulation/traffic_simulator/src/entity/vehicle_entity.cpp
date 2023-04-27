@@ -42,8 +42,10 @@ VehicleEntity::VehicleEntity(
 
 void VehicleEntity::appendDebugMarker(visualization_msgs::msg::MarkerArray & marker_array)
 {
-  const auto marker = behavior_plugin_ptr_->getDebugMarker();
-  std::copy(marker.begin(), marker.end(), std::back_inserter(marker_array.markers));
+  if (!is_warp_mode) {
+    const auto marker = behavior_plugin_ptr_->getDebugMarker();
+    std::copy(marker.begin(), marker.end(), std::back_inserter(marker_array.markers));
+  }
 }
 
 void VehicleEntity::cancelRequest()
@@ -56,6 +58,9 @@ auto VehicleEntity::getCurrentAction() const -> std::string
 {
   if (not npc_logic_started_) {
     return "waiting";
+  }
+  if (is_warp_mode) {
+    return "warp";
   } else {
     return behavior_plugin_ptr_->getCurrentAction();
   }
@@ -86,6 +91,9 @@ auto VehicleEntity::getGoalPoses() -> std::vector<traffic_simulator_msgs::msg::L
 
 auto VehicleEntity::getObstacle() -> std::optional<traffic_simulator_msgs::msg::Obstacle>
 {
+  if (is_warp_mode) {
+    return std::nullopt;
+  }
   return behavior_plugin_ptr_->getObstacle();
 }
 
@@ -100,7 +108,7 @@ auto VehicleEntity::getRouteLanelets(double horizon) -> std::vector<std::int64_t
 
 auto VehicleEntity::getWaypoints() -> const traffic_simulator_msgs::msg::WaypointsArray
 {
-  if (!npc_logic_started_) {
+  if (!npc_logic_started_ || is_warp_mode) {
     return traffic_simulator_msgs::msg::WaypointsArray();
   }
   try {
@@ -116,14 +124,14 @@ auto VehicleEntity::getWaypoints() -> const traffic_simulator_msgs::msg::Waypoin
 
 void VehicleEntity::onUpdate(double current_time, double step_time, bool warp_mode)
 {
-  EntityBase::onUpdate(current_time, step_time);
+  EntityBase::onUpdate(current_time, step_time, warp_mode);
   if (npc_logic_started_) {
     const auto update_status = [this](const auto & status_updated, double step_time) {
       setStatus(status_updated);
       updateStandStillDuration(step_time);
       updateTraveledDistance(step_time);
     };
-    if (warp_mode) {
+    if (is_warp_mode) {
       updateEntityStatusTimestamp(current_time);
       auto status_updated = status_;
       status_updated.time = current_time;

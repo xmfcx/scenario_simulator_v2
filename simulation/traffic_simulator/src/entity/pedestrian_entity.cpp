@@ -42,8 +42,10 @@ PedestrianEntity::PedestrianEntity(
 
 void PedestrianEntity::appendDebugMarker(visualization_msgs::msg::MarkerArray & marker_array)
 {
-  const auto marker = behavior_plugin_ptr_->getDebugMarker();
-  std::copy(marker.begin(), marker.end(), std::back_inserter(marker_array.markers));
+  if (!is_warp_mode) {
+    const auto marker = behavior_plugin_ptr_->getDebugMarker();
+    std::copy(marker.begin(), marker.end(), std::back_inserter(marker_array.markers));
+  }
 }
 
 void PedestrianEntity::requestAssignRoute(
@@ -89,6 +91,9 @@ std::string PedestrianEntity::getCurrentAction() const
 {
   if (!npc_logic_started_) {
     return "waiting";
+  }
+  if (is_warp_mode) {
+    return "warp";
   }
   return behavior_plugin_ptr_->getCurrentAction();
 }
@@ -236,14 +241,14 @@ void PedestrianEntity::setDecelerationRateLimit(double deceleration_rate)
 
 void PedestrianEntity::onUpdate(double current_time, double step_time, bool warp_mode)
 {
-  EntityBase::onUpdate(current_time, step_time);
+  EntityBase::onUpdate(current_time, step_time, warp_mode);
   if (npc_logic_started_) {
     const auto update_status = [this](const auto & status_updated, double step_time) {
       setStatus(status_updated);
       updateStandStillDuration(step_time);
       updateTraveledDistance(step_time);
     };
-    if (warp_mode) {
+    if (is_warp_mode) {
       updateEntityStatusTimestamp(current_time);
       auto status_updated = status_;
       status_updated.time = current_time;

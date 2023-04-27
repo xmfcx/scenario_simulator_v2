@@ -122,9 +122,7 @@ public:
 
   /*   */ auto isNpcLogicStarted() const -> bool;
 
-  /*   */ void onUpdate(double current_time, double step_time);
-
-  virtual void onUpdate(double current_time, double step_time, bool warp_mode) = 0;
+  virtual void onUpdate(double current_time, double step_time, bool warp_mode);
 
   virtual void onPostUpdate(double current_time, double step_time);
 
@@ -221,6 +219,7 @@ protected:
   std::shared_ptr<hdmap_utils::HdMapUtils> hdmap_utils_ptr_;
   std::shared_ptr<traffic_simulator::TrafficLightManagerBase> traffic_light_manager_;
 
+  bool is_warp_mode = true;
   bool npc_logic_started_ = false;
   double stand_still_duration_ = 0.0;
   double traveled_distance_ = 0.0;

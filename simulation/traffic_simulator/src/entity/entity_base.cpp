@@ -252,8 +252,9 @@ auto EntityBase::isTargetSpeedReached(const speed_change::RelativeTargetSpeed & 
   return isTargetSpeedReached(target_speed.getAbsoluteValue(getStatus(), other_status_));
 }
 
-void EntityBase::onUpdate(double /*current_time*/, double step_time)
+void EntityBase::onUpdate(double /*current_time*/, double step_time, bool warp_mode)
 {
+  is_warp_mode = warp_mode;
   job_list_.update(step_time, job::Event::PRE_UPDATE);
   status_before_update_ = status_;
   speed_planner_ =
