@@ -61,7 +61,7 @@ public:
 
   auto getEntityTypename() const -> const std::string & override;
 
-  void onUpdate(double current_time, double step_time) override;
+  void onUpdate(double current_time, double step_time, bool warp_mode) override;
 
   void requestAcquirePosition(
     const traffic_simulator_msgs::msg::LaneletPose & lanelet_pose) override;

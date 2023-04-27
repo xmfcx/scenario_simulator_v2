@@ -30,7 +30,7 @@ public:
     const std::string & name, const traffic_simulator_msgs::msg::EntityStatus &,
     const traffic_simulator_msgs::msg::MiscObjectParameters &);
 
-  void onUpdate(double, double) override;
+  void onUpdate(double, double, bool warp_mode) override;
 
   auto getCurrentAction() const -> std::string override;
 

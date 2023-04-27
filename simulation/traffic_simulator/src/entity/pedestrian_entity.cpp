@@ -234,36 +234,45 @@ void PedestrianEntity::setDecelerationRateLimit(double deceleration_rate)
   setBehaviorParameter(behavior_parameter);
 }
 
-void PedestrianEntity::onUpdate(double current_time, double step_time)
+void PedestrianEntity::onUpdate(double current_time, double step_time, bool warp_mode)
 {
   EntityBase::onUpdate(current_time, step_time);
   if (npc_logic_started_) {
-    behavior_plugin_ptr_->setOtherEntityStatus(other_status_);
-    behavior_plugin_ptr_->setEntityTypeList(entity_type_list_);
-    behavior_plugin_ptr_->setEntityStatus(status_);
-    behavior_plugin_ptr_->setTargetSpeed(target_speed_);
-    if (status_.lanelet_pose_valid) {
-      auto route = route_planner_ptr_->getRouteLanelets(status_.lanelet_pose);
-      behavior_plugin_ptr_->setRouteLanelets(route);
+    const auto update_status = [this](const auto & status_updated, double step_time) {
+      setStatus(status_updated);
+      updateStandStillDuration(step_time);
+      updateTraveledDistance(step_time);
+    };
+    if (warp_mode) {
+      updateEntityStatusTimestamp(current_time);
+      auto status_updated = status_;
+      status_updated.time = current_time;
+      update_status(status_updated, step_time);
     } else {
-      std::vector<std::int64_t> empty = {};
-      behavior_plugin_ptr_->setRouteLanelets(empty);
-    }
-    behavior_plugin_ptr_->update(current_time, step_time);
-    auto status_updated = behavior_plugin_ptr_->getUpdatedStatus();
-    if (status_updated.lanelet_pose_valid) {
-      auto following_lanelets =
-        hdmap_utils_ptr_->getFollowingLanelets(status_updated.lanelet_pose.lanelet_id);
-      auto l = hdmap_utils_ptr_->getLaneletLength(status_updated.lanelet_pose.lanelet_id);
-      if (following_lanelets.size() == 1 && l <= status_updated.lanelet_pose.s) {
-        stopAtEndOfRoad();
-        return;
+      behavior_plugin_ptr_->setOtherEntityStatus(other_status_);
+      behavior_plugin_ptr_->setEntityTypeList(entity_type_list_);
+      behavior_plugin_ptr_->setEntityStatus(status_);
+      behavior_plugin_ptr_->setTargetSpeed(target_speed_);
+      if (status_.lanelet_pose_valid) {
+        auto route = route_planner_ptr_->getRouteLanelets(status_.lanelet_pose);
+        behavior_plugin_ptr_->setRouteLanelets(route);
+      } else {
+        std::vector<std::int64_t> empty = {};
+        behavior_plugin_ptr_->setRouteLanelets(empty);
       }
+      behavior_plugin_ptr_->update(current_time, step_time);
+      auto status_updated = behavior_plugin_ptr_->getUpdatedStatus();
+      if (status_updated.lanelet_pose_valid) {
+        auto following_lanelets =
+          hdmap_utils_ptr_->getFollowingLanelets(status_updated.lanelet_pose.lanelet_id);
+        auto l = hdmap_utils_ptr_->getLaneletLength(status_updated.lanelet_pose.lanelet_id);
+        if (following_lanelets.size() == 1 && l <= status_updated.lanelet_pose.s) {
+          stopAtEndOfRoad();
+          return;
+        }
+      }
+      update_status(status_updated, step_time);
     }
-
-    setStatus(status_updated);
-    updateStandStillDuration(step_time);
-    updateTraveledDistance(step_time);
   } else {
     updateEntityStatusTimestamp(current_time);
   }

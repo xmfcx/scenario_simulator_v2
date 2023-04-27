@@ -25,7 +25,7 @@ MiscObjectEntity::MiscObjectEntity(
 {
 }
 
-void MiscObjectEntity::onUpdate(double, double)
+void MiscObjectEntity::onUpdate(double, double, bool)
 {
   status_.action_status.accel = geometry_msgs::msg::Accel();
   status_.action_status.twist = geometry_msgs::msg::Twist();

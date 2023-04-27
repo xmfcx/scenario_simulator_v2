@@ -36,6 +36,8 @@ struct Configuration
 
   bool verbose = false;
 
+  bool warp_mode = false;
+
   bool standalone_mode = false;
 
   double initialize_duration = 0;

@@ -303,7 +303,7 @@ auto EgoEntity::getWaypoints() -> const traffic_simulator_msgs::msg::WaypointsAr
   return autoware->getWaypoints();
 }
 
-void EgoEntity::onUpdate(double current_time, double step_time)
+void EgoEntity::onUpdate(double current_time, double step_time, bool /*warp_mode*/)
 {
   autoware->rethrow();
 

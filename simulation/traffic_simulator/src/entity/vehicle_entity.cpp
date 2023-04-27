@@ -107,57 +107,63 @@ auto VehicleEntity::getWaypoints() -> const traffic_simulator_msgs::msg::Waypoin
     return behavior_plugin_ptr_->getWaypoints();
   } catch (const std::runtime_error & e) {
     if (not status_.lanelet_pose_valid) {
-      THROW_SIMULATION_ERROR(
-        "Failed to calculate waypoints in NPC logics, please check Entity : ", name,
-        " is in a lane coordinate.");
+      return traffic_simulator_msgs::msg::WaypointsArray();
     } else {
       THROW_SIMULATION_ERROR("Failed to calculate waypoint in NPC logics.");
     }
   }
 }
 
-void VehicleEntity::onUpdate(double current_time, double step_time)
+void VehicleEntity::onUpdate(double current_time, double step_time, bool warp_mode)
 {
   EntityBase::onUpdate(current_time, step_time);
   if (npc_logic_started_) {
-    behavior_plugin_ptr_->setOtherEntityStatus(other_status_);
-    behavior_plugin_ptr_->setEntityTypeList(entity_type_list_);
-    behavior_plugin_ptr_->setEntityStatus(status_);
-    behavior_plugin_ptr_->setTargetSpeed(target_speed_);
+    const auto update_status = [this](const auto & status_updated, double step_time) {
+      setStatus(status_updated);
+      updateStandStillDuration(step_time);
+      updateTraveledDistance(step_time);
+    };
+    if (warp_mode) {
+      updateEntityStatusTimestamp(current_time);
+      auto status_updated = status_;
+      status_updated.time = current_time;
+      update_status(status_updated, step_time);
+    } else {
+      behavior_plugin_ptr_->setOtherEntityStatus(other_status_);
+      behavior_plugin_ptr_->setEntityTypeList(entity_type_list_);
+      behavior_plugin_ptr_->setEntityStatus(status_);
+      behavior_plugin_ptr_->setTargetSpeed(target_speed_);
 
-    std::vector<std::int64_t> route_lanelets = {};
-    if (status_.lanelet_pose_valid) {
-      route_lanelets = route_planner_ptr_->getRouteLanelets(status_.lanelet_pose);
-    }
-    behavior_plugin_ptr_->setRouteLanelets(route_lanelets);
+      std::vector<std::int64_t> route_lanelets = {};
+      if (status_.lanelet_pose_valid) {
+        route_lanelets = route_planner_ptr_->getRouteLanelets(status_.lanelet_pose);
+      }
+      behavior_plugin_ptr_->setRouteLanelets(route_lanelets);
 
-    // recalculate spline only when input data changes
-    if (previous_route_lanelets_ != route_lanelets) {
-      previous_route_lanelets_ = route_lanelets;
-      try {
-        spline_ = std::make_shared<math::geometry::CatmullRomSpline>(
-          hdmap_utils_ptr_->getCenterPoints(route_lanelets));
-      } catch (const common::scenario_simulator_exception::SemanticError & error) {
-        // reset the ptr when spline cannot be calculated
-        spline_.reset();
+      // recalculate spline only when input data changes
+      if (previous_route_lanelets_ != route_lanelets) {
+        previous_route_lanelets_ = route_lanelets;
+        try {
+          spline_ = std::make_shared<math::geometry::CatmullRomSpline>(
+            hdmap_utils_ptr_->getCenterPoints(route_lanelets));
+        } catch (const common::scenario_simulator_exception::SemanticError & error) {
+          // reset the ptr when spline cannot be calculated
+          spline_.reset();
+        }
+      }
+      behavior_plugin_ptr_->setReferenceTrajectory(spline_);
+      behavior_plugin_ptr_->update(current_time, step_time);
+      auto status_updated = behavior_plugin_ptr_->getUpdatedStatus();
+      if (status_updated.lanelet_pose_valid) {
+        auto following_lanelets =
+          hdmap_utils_ptr_->getFollowingLanelets(status_updated.lanelet_pose.lanelet_id);
+        auto l = hdmap_utils_ptr_->getLaneletLength(status_updated.lanelet_pose.lanelet_id);
+        if (following_lanelets.size() == 1 && l <= status_updated.lanelet_pose.s) {
+          stopAtEndOfRoad();
+          return;
+        }
       }
     }
-    behavior_plugin_ptr_->setReferenceTrajectory(spline_);
-    behavior_plugin_ptr_->update(current_time, step_time);
-    auto status_updated = behavior_plugin_ptr_->getUpdatedStatus();
-    if (status_updated.lanelet_pose_valid) {
-      auto following_lanelets =
-        hdmap_utils_ptr_->getFollowingLanelets(status_updated.lanelet_pose.lanelet_id);
-      auto l = hdmap_utils_ptr_->getLaneletLength(status_updated.lanelet_pose.lanelet_id);
-      if (following_lanelets.size() == 1 && l <= status_updated.lanelet_pose.s) {
-        stopAtEndOfRoad();
-        return;
-      }
-    }
-
-    setStatus(status_updated);
-    updateStandStillDuration(step_time);
-    updateTraveledDistance(step_time);
   } else {
     updateEntityStatusTimestamp(current_time);
   }

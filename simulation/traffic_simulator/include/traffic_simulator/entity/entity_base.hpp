@@ -122,7 +122,9 @@ public:
 
   /*   */ auto isNpcLogicStarted() const -> bool;
 
-  virtual void onUpdate(double current_time, double step_time);
+  /*   */ void onUpdate(double current_time, double step_time);
+
+  virtual void onUpdate(double current_time, double step_time, bool warp_mode) = 0;
 
   virtual void onPostUpdate(double current_time, double step_time);
 
